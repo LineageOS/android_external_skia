@@ -190,6 +190,13 @@ endif
 LOCAL_SRC_FILES += \
 	emoji/EmojiFont.cpp
 
+# including the optimized assembly code for the src-overing operation
+ifeq ($(TARGET_ARCH),arm)
+	LOCAL_CFLAGS += -D__CPU_ARCH_ARM
+	LOCAL_SRC_FILES += \
+		src/opts/S32A_D565_Opaque_arm.S
+endif
+
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \
         libemoji \
