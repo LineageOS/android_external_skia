@@ -425,6 +425,75 @@ static void S32_D565_Blend_Dither_neon(uint16_t *dst, const SkPMColor *src,
 
 #define S32A_D565_Blend_PROC        S32A_D565_Blend_neon
 #define S32_D565_Blend_Dither_PROC  S32_D565_Blend_Dither_neon
+#elif __ARM_ARCH__ >= 7 && !defined(SK_CPU_BENDIAN)
+static void S32A_D565_Opaque_v7(uint16_t* SK_RESTRICT dst,
+                                  const SkPMColor* SK_RESTRICT src, int count,
+                                  U8CPU alpha, int /*x*/, int /*y*/) {
+    SkASSERT(255 == alpha);
+
+    asm volatile (
+                  "1:                                   \n\t"
+                  "ldr     r3, [%[src]], #4             \n\t"
+                  "cmp     r3, #0xff000000              \n\t"
+                  "blo     2f                           \n\t"
+                  "and     r4, r3, #0x0000f8            \n\t"
+                  "and     r5, r3, #0x00fc00            \n\t"
+                  "and     r6, r3, #0xf80000            \n\t"
+                  "pld     [r1, #32]                    \n\t"
+                  "lsl     r3, r4, #8                   \n\t"
+                  "orr     r3, r3, r5, lsr #5           \n\t"
+                  "orr     r3, r3, r6, lsr #19          \n\t"
+                  "subs    %[count], %[count], #1       \n\t"
+                  "strh    r3, [%[dst]], #2             \n\t"
+                  "bne     1b                           \n\t"
+                  "b       4f                           \n\t"
+                  "2:                                   \n\t"
+                  "lsrs    r7, r3, #24                  \n\t"
+                  "beq     3f                           \n\t"
+                  "ldrh    r4, [%[dst]]                 \n\t"
+                  "rsb     r7, r7, #255                 \n\t"
+                  "and     r6, r4, #0x001f              \n\t"
+                  "ubfx    r5, r4, #5, #6               \n\t"
+                  "pld     [r0, #16]                    \n\t"
+                  "lsr     r4, r4, #11                  \n\t"
+                  "smulbb  r6, r6, r7                   \n\t"
+                  "smulbb  r5, r5, r7                   \n\t"
+                  "smulbb  r4, r4, r7                   \n\t"
+                  "ubfx    r7, r3, #16, #8              \n\t"
+                  "ubfx    ip, r3, #8, #8               \n\t"
+                  "and     r3, r3, #0xff                \n\t"
+                  "add     r6, r6, #16                  \n\t"
+                  "add     r5, r5, #32                  \n\t"
+                  "add     r4, r4, #16                  \n\t"
+                  "add     r6, r6, r6, lsr #5           \n\t"
+                  "add     r5, r5, r5, lsr #6           \n\t"
+                  "add     r4, r4, r4, lsr #5           \n\t"
+                  "add     r6, r7, r6, lsr #5           \n\t"
+                  "add     r5, ip, r5, lsr #6           \n\t"
+                  "add     r4, r3, r4, lsr #5           \n\t"
+                  "lsr     r6, r6, #3                   \n\t"
+                  "and     r5, r5, #0xfc                \n\t"
+                  "and     r4, r4, #0xf8                \n\t"
+                  "orr     r6, r6, r5, lsl #3           \n\t"
+                  "orr     r4, r6, r4, lsl #8           \n\t"
+                  "strh    r4, [%[dst]], #2             \n\t"
+                  "pld     [r1, #32]                    \n\t"
+                  "subs    %[count], %[count], #1       \n\t"
+                  "bne     1b                           \n\t"
+                  "b       4f                           \n\t"
+                  "3:                                   \n\t"
+                  "subs    %[count], %[count], #1       \n\t"
+                  "add     %[dst], %[dst], #2           \n\t"
+                  "bne     1b                           \n\t"
+                  "4:                                   \n\t"
+                  : [dst] "+r" (dst), [src] "+r" (src), [count] "+r" (count)
+                  :
+                  : "memory", "cc", "r3", "r4", "r5", "r6", "r7", "ip"
+                  );
+}
+#define S32A_D565_Opaque_PROC       S32A_D565_Opaque_v7
+#define S32A_D565_Blend_PROC        NULL
+#define S32_D565_Blend_Dither_PROC  NULL
 #else
 #define S32A_D565_Blend_PROC        NULL
 #define S32_D565_Blend_Dither_PROC  NULL
