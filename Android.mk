@@ -198,10 +198,25 @@ ifeq ($(TARGET_ARCH),arm)
 		src/opts/S32A_D565_Opaque_arm.S
 endif
 
+ifeq ($(TARGET_ARCH_VARIANT),armv6)
+	ARCH_ARMV6_ARMV7 := true
+endif
+
+ifeq ($(TARGET_ARCH_VARIANT),armv7-a)
+	ARCH_ARMV6_ARMV7 := true
+endif
+
+ifeq ($(ARCH_ARMV6_ARMV7),true)
+	LOCAL_SRC_FILES += \
+		src/opts/S32_Opaque_D32_nofilter_DX_gether_arm.S
+endif
+
+
 ifeq ($(ARCH_ARM_HAVE_NEON),true)
 	LOCAL_SRC_FILES += \
 		src/opts/memset16_neon.S \
-		src/opts/memset32_neon.S
+		src/opts/memset32_neon.S \
+		src/opts/S32A_Opaque_BlitRow32_arm.S
 endif
 
 LOCAL_SHARED_LIBRARIES := \
