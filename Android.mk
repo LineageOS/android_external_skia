@@ -194,7 +194,8 @@ LOCAL_SRC_FILES += \
 ifeq ($(TARGET_ARCH),arm)
 	LOCAL_CFLAGS += -D__CPU_ARCH_ARM
 	LOCAL_SRC_FILES += \
-		src/opts/S32A_D565_Opaque_arm.S
+		src/opts/S32A_D565_Opaque_arm.S \
+		src/opts/S32A_Opaque_BlitRow32_arm.S
 endif
 
 ifeq ($(TARGET_ARCH_VARIANT),armv6)
@@ -214,8 +215,7 @@ endif
 ifeq ($(ARCH_ARM_HAVE_NEON),true)
 	LOCAL_SRC_FILES += \
 		src/opts/memset16_neon.S \
-		src/opts/memset32_neon.S \
-		src/opts/S32A_Opaque_BlitRow32_arm.S
+		src/opts/memset32_neon.S
 endif
 
 LOCAL_SHARED_LIBRARIES := \
