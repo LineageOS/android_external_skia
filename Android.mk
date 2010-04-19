@@ -211,8 +211,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libcutils \
     libemoji \
 	libutils \
-	libz \
-	libdl
+	libz 
 
 LOCAL_STATIC_LIBRARIES := \
 	libft2 \
