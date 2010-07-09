@@ -199,11 +199,11 @@ ifeq ($(TARGET_ARCH),arm)
 		src/opts/S32A_Opaque_BlitRow32_arm.S
 endif
 
-ifeq ($(TARGET_ARCH_VARIANT),armv6)
+ifeq "$(findstring armv6,$(TARGET_ARCH_VARIANT))" "armv6"
 	ARCH_ARMV6_ARMV7 := true
 endif
 
-ifeq ($(TARGET_ARCH_VARIANT),armv7-a)
+ifeq "$(findstring armv7,$(TARGET_ARCH_VARIANT))" "armv7"
 	ARCH_ARMV6_ARMV7 := true
 endif
 
