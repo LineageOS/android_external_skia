@@ -199,6 +199,11 @@ ifeq ($(TARGET_ARCH),arm)
 		src/opts/S32A_Opaque_BlitRow32_arm.S
 endif
 
+ifeq "$(findstring armv5te-vfp,$(TARGET_ARCH_VARIANT))" "armv5te-vfp"
+        LOCAL_SRC_FILES += \
+                src/opts/S32_Opaque_D32_nofilter_DX_gether_arm.S
+endif
+
 ifeq "$(findstring armv6,$(TARGET_ARCH_VARIANT))" "armv6"
 	ARCH_ARMV6_ARMV7 := true
 endif
