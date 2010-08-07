@@ -146,6 +146,9 @@ public:
     /** Set the matrix to rotate about (0,0) by the specified number of degrees.
     */
     void setRotate(SkScalar degrees);
+    void setRotateX(SkScalar degrees);
+    void setRotateY(SkScalar degrees);
+    void setRotateZ(SkScalar degrees);
     /** Set the matrix to rotate by the specified sine and cosine values, with
         a pivot point at (px, py). The pivot point is the coordinate that
         should remain unchanged by the specified transformation.
