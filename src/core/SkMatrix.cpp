@@ -311,6 +311,15 @@ void SkMatrix::setRotate(SkScalar degrees) {
     this->setSinCos(sinV, cosV);
 }
 
+void SkMatrix::setRotateX(SkScalar deg) {
+}
+
+void SkMatrix::setRotateY(SkScalar deg) {
+}
+
+void SkMatrix::setRotateZ(SkScalar deg) {
+}
+
 bool SkMatrix::preRotate(SkScalar degrees, SkScalar px, SkScalar py) {
     SkMatrix    m;
     m.setRotate(degrees, px, py);
