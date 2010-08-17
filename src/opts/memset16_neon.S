@@ -25,6 +25,7 @@
 ***************************************************************************/
 
         .code 32
+        .fpu neon
         .align 4
         .globl memset16_neon
         .func
@@ -32,6 +33,11 @@
 memset16_neon:
         cmp             r2, #0
         bxeq            lr
+
+        /* Keep in mind that r2 -- the count argument -- is for the
+         * number of 16-bit items to copy.
+         */
+        lsl             r2, r2, #1
 
         push            {r0}
 

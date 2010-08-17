@@ -44,11 +44,19 @@ SkMemset32Proc SkMemset32GetPlatformProc();
         extern "C" void memset16_neon(uint16_t*, uint16_t, int);
         extern "C" void memset32_neon(uint32_t*, uint32_t, int);
 
-        #define sk_memset16(dst, value, count)    memset16_neon(dst, value, (count) << 1)
-        #define sk_memset32(dst, value, count)    memset32_neon(dst, value, (count) << 2)
+        /*
+         * count is the number of times value should be copied to dst buffer.
+         * In case of memset16_neon, it is the number of half-words and in case
+         * of memset32_neon, it is the number of words.
+         */
+        #define sk_memset16(dst, value, count)    memset16_neon(dst, value, count)
+        #define sk_memset32(dst, value, count)    memset32_neon(dst, value, count)
     #else
         #include "cutils/memory.h"
 
+        /*
+         * count is the number of bytes copied to dst buffer.
+         */
         #define sk_memset16(dst, value, count)    android_memset16(dst, value, (count) << 1)
         #define sk_memset32(dst, value, count)    android_memset32(dst, value, (count) << 2)
     #endif
