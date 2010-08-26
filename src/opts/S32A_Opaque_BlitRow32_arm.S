@@ -277,42 +277,89 @@ S32A_Opaque_BlitRow32_arm:
  * r2 - count
  */
     push     {r4-r11}
-    mov      r9, #0xFF
-    orr      r10, r9, r9, lsl #16
-    mvn      r11, r10
+    mov      r10, #0xFF
 
-.Lblitrow32_loop:
-    ldr      r3, [r0]
-    ldr      r4, [r1], #4
+    orr      r10, r10, r10, lsl #16    //mask = r10 = 0x00FF00FF
 
-    cmp      r3, #0
-    streq    r4, [r0], #4
+    subs      r2, r2, #2
+    blt       .Lblitrow32_single_loop
+
+.Lblitrow32_double_loop:
+    ldm      r0, {r3, r4}
+    ldm      r1!, {r5, r6}
+
+    orrs     r9, r3, r4
     beq      .Lblitrow32_loop_cond
 
-    // r5 <- (255-alpha)+1
-    sub      r5, r9, r4, lsr #24
-    and      r6, r3, r10
-    add      r5, r5, #1
-    and      r7, r10, r3, lsr #8
+    // First iteration
+    lsr      r7, r5, #24               //extract alpha
+    and      r8, r3, r10               //rb = (dst & mask)
+    rsb      r7, r7, #256              //r5 = scale = (255-alpha)+1
+    and      r9, r10, r3, lsr #8       //ag = (dst>>8) & mask
 
-    mul      r8, r6, r5
-    lsr      r6, r8, #8
-    mul      r8, r7, r5
+    mul      r11, r8, r7               //RB = rb * scale
+    mul      r3, r9, r7                //AG = ag * scale
 
-    // combine rb and ag
-    and      r6, r6, r10
-    and      r7, r8, r11
-    orr      r6, r6, r7
+    // combine RB and AG
+    and      r11, r10, r11, lsr #8     //r8 = (RB>>8) & mask
+    and      r3, r3, r10, lsl #8       //r9 = AG & ~mask
+
+    lsr      r7, r6, #24               //extract alpha for second iteration
+    orr      r3, r3, r11
+
+    // Second iteration
+    and      r8, r4, r10               //rb = (dst & mask)
+    rsb      r7, r7, #256              //r5 = scale = (255-alpha)+1
+    and      r9, r10, r4, lsr #8       //ag = (dst>>8) & mask
+
+    mul      r11, r8, r7               //RB = rb * scale
+    mul      r4, r9, r7                //AG = ag * scale
+
+    // combine RB and AG
+    and      r11, r10, r11, lsr #8     //r8 = (RB>>8) & mask
+    and      r4, r4, r10, lsl #8       //r9 = AG & ~mask
+    orr      r4, r4, r11
 
     // add src to combined value
+    add      r5, r5, r3
     add      r6, r6, r4
-    str      r6, [r0], #4
 
 .Lblitrow32_loop_cond:
-    subs     r2, r2, #1
-    bhi      .Lblitrow32_loop
+    subs     r2, r2, #2
+    stm      r0!, {r5, r6}
+
+    bge      .Lblitrow32_double_loop
+
+.Lblitrow32_single_loop:
+    adds     r2, #1
+    blo      .Lexit
+
+    ldr      r3, [r0]
+    ldr      r5, [r1], #4
+
+    cmp      r3, #0
+    beq      .Lblitrow32_single_store
+
+    lsr      r7, r5, #24               //extract alpha
+    and      r8, r3, r10               //rb = (dst & mask)
+    rsb      r7, r7, #256              //r5 = scale = (255-alpha)+1
+    and      r9, r10, r3, lsr #8       //ag = (dst>>8) & mask
+
+    mul      r8, r8, r7                //RB = rb * scale
+    mul      r9, r9, r7                //AG = ag * scale
+
+    // combine RB and AG
+    and      r8, r10, r8, lsr #8       //r8 = (RB>>8) & mask
+    and      r9, r9, r10, lsl #8       //r9 = AG & ~mask
+    orr      r3, r8, r9
+
+    add      r5, r5, r3                //add src to combined value
+
+.Lblitrow32_single_store:
+    str      r5, [r0], #4
+
+.Lexit:
     pop      {r4-r11}
     bx       lr
 
 #endif
-
