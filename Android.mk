@@ -196,7 +196,8 @@ ifeq ($(TARGET_ARCH),arm)
 	LOCAL_CFLAGS += -D__CPU_ARCH_ARM
 	LOCAL_SRC_FILES += \
 		src/opts/S32A_D565_Opaque_arm.S \
-		src/opts/S32A_Opaque_BlitRow32_arm.S
+		src/opts/S32A_Opaque_BlitRow32_arm.S \
+		src/opts/S32A_Blend_BlitRow32_arm.S
 endif
 
 # Added to build with the armv5te cflags changes.
