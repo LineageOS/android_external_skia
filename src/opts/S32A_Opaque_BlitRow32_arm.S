@@ -22,15 +22,15 @@
 
 S32A_Opaque_BlitRow32_arm:
 
+    push     {r4-r11}
 #if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
 
-    push     {r4-r11}
     cmp      r2,#24
     blt      .Lless_than_24
 
     vpush    {Q4-Q7}
 
-    vmov.i16 q14,#0xff               //;Q4.16 = 255
+    vmov.i16 q14,#0x100               //Q14.16 = 256
 //prefix
     vld4.8  {d0, d1, d2, d3}, [r1]! //d0,d1,d2,d3 = sourc rgb(0,1,2,3) A(0,1,2,3)
                                     //update source ptr but not dst ptr
@@ -40,13 +40,10 @@ S32A_Opaque_BlitRow32_arm:
     sub      r2,r2,#8
 .Lloop:
     sub      r2,r2,#16
-    vsubw.u8 q4,q14,d3               //Q4.16 = 255-d3
-                                    //update source ptr but not dst ptr
+    vsubw.u8 q4,q14,d3               //Q4.16 = 256-d3
 
     //It has to be 24 since we pre-load 8 word for the next rounds
     cmp      r2,#16
-
-    vsra.u16 q4,q4,#7               //Q4 = Q4.16+Q4 >> 7 ; A(0,1,2,3)
 
     vmovl.u8 q6,d4                  //Q6 = vmovl.u8 d4
     vmovl.u8 q7,d5                  //Q7 = vmovl.u8 d5
@@ -78,14 +75,7 @@ S32A_Opaque_BlitRow32_arm:
     //add r0, r0, r5
 
     //The next 4 words
-//    vld4.8  {d20, d21, d22, d23}, [r1]! ;d0,d1,d2,d3 = sourc rgb(0,1,2,3) A(0,1,2,3)
-//                                    ;update source ptr but not dst ptr
-//    vld4.8  {d24, d25, d26, d27}, [r0]  ;d4,d5,d6,d7 = dst rgb(0,1,2,3) A(0,1,2,3)
-
-                                    //update source ptr but not dst ptr
-    vsubW.u8 q4,q14,d23               //Q4.16 = 255-d3
-
-    vsra.u16 q4,q4,#7               //Q4 = Q4.16+Q4 >> 7 ; A(0,1,2,3)
+    vsubW.u8 q4,q14,d23               //Q4.16 = 256-d3
 
     vmovl.u8 q6,d24                  //Q6 = vmovl.u8 d4
     vmovl.u8 q7,d25                  //Q7 = vmovl.u8 d5
@@ -116,15 +106,10 @@ S32A_Opaque_BlitRow32_arm:
 
     bge      .Lloop
 
-//postfix:
 //There are 8 words left unprocessed from previous round
-    vmov.i16 q4,#0xff               //Q4.16 = 255
-    vsubw.u8 q4,q4,d3               //Q4.16 = 255-d3
+    vsubw.u8 q4,q14,d3               //Q4.16 = 256-d3
 
     cmp      r2,#8
-
-    vshr.u16 q5,q4,#7               //Q5.16 = Q4 >> 7
-    vadd.i16 q4,q4,q5               //Q4 = Q4.16+Q5.16 ; A(0,1,2,3)
 
     vmovl.u8 q6,d4                  //Q6 = vmovl.u8 d4
     vmovl.u8 q7,d5                  //Q7 = vmovl.u8 d5
@@ -158,13 +143,7 @@ S32A_Opaque_BlitRow32_arm:
                                     //update source ptr but not dst ptr
     vld4.8  {d4, d5, d6, d7}, [r0]  //d4,d5,d6,d7 = dst rgb(0,1,2,3) A(0,1,2,3)
 
-    vmov.i16 q4,#0xff               //Q4.16 = 255
-    vsubw.u8 q4,q4,d3               //Q4.16 = 255-d3
-
-    cmp      r2,#8
-
-    vshr.u16 q5,q4,#7               //Q5.16 = Q4 >> 7
-    vadd.i16 q4,q4,q5               //Q4 = Q4.16+Q5.16 ; A(0,1,2,3)
+    vsubw.u8 q4,q14,d3               //Q4.16 = 256-d3
 
     vmovl.u8 q6,d4                  //Q6 = vmovl.u8 d4
     vmovl.u8 q7,d5                  //Q7 = vmovl.u8 d5
@@ -188,42 +167,13 @@ S32A_Opaque_BlitRow32_arm:
 
     vst4.8  {d4, d5, d6, d7}, [r0]! //dst rgb(0,1,2,3) A(0,1,2,3) = d4,d5,d6,d7
 
-    //It will be guaranteed to be less than 8
-    //bge      loop
 .Lless_than_8:
     vpop     {Q4-Q7}
 
 .Lless_than_4:
-    subs     r4,r2,#1
-    bmi      .Lto_exit  // S32A_Opaque_BlitRow32_neon + 268
-    mov      r8,#0xff
-    mvn      r10,#0xff00
-    orr      r9,r8,r8,lsl #16
-    lsl      r11,r9,#8
-.Lresidual_loop:
-    ldr      r3,[r1,#0]
-    ldr      r12,[r0,#0]
-    add      r1,r1,#4
-    sub      r2,r8,r3,lsr #24
-    and      r5,r12,r9
-    cmp      r2,r2
-    add      r2,r2,#1
-    and      r12,r10,r12,lsr #8
-    strne    r6,[r7,#0xeef]
-    mul      r5,r5,r2
-    mul      r2,r12,r2
-    strne    r6,[r7,#0xeef]
-    subs     r4,r4,#1
-    and      r12,r9,r5,lsr #8
-    and      r2,r2,r11
-    orr      r2,r2,r12
-    add      r2,r2,r3
-    str      r2,[r0],#4
-    bpl      .Lresidual_loop  // S32A_Opaque_BlitRow32_neon + 192
-
-.Lto_exit:
-    pop      {r4-r11}
-    bx       lr
+    cmp      r2, #1
+    bmi      .Lexit
+    b        .Lresidual_loop
 
 .Lless_than_24:
     cmp      r2,#8
@@ -236,13 +186,10 @@ S32A_Opaque_BlitRow32_arm:
                                     //update source ptr but not dst ptr
     vld4.8  {d4, d5, d6, d7}, [r0]  //d4,d5,d6,d7 = dst rgb(0,1,2,3) A(0,1,2,3)
 
-    vmov.i16 q10,#0xff               //Q4.16 = 255
-    vsubW.u8 q10,q10,d3               //Q4.16 = 255-d3
+    vmov.i16 q10,#0x100               //Q4.16 = 256
+    vsubW.u8 q10,q10,d3               //Q4.16 = 256-d3
 
     cmp      r2,#8
-
-    vshr.u16 q11,q10,#7               //Q5.16 = Q4 >> 7
-    vadd.i16 q10,q10,q11               //Q4 = Q4.16+Q5.16 ; A(0,1,2,3)
 
     vmovl.u8 q12,d4                  //Q6 = vmovl.u8 d4
     vmovl.u8 q13,d5                  //Q7 = vmovl.u8 d5
@@ -269,20 +216,19 @@ S32A_Opaque_BlitRow32_arm:
     bge      .Lloop_8
     b        .Lless_than_4
 
-#else
+#endif
 
 /*
  * r0 - dst
  * r1 - src
  * r2 - count
  */
-    push     {r4-r11}
+.Lresidual_loop:
     mov      r10, #0xFF
-
     orr      r10, r10, r10, lsl #16    //mask = r10 = 0x00FF00FF
 
-    subs      r2, r2, #2
-    blt       .Lblitrow32_single_loop
+    subs     r2, r2, #2
+    blt      .Lblitrow32_single_loop
 
 .Lblitrow32_double_loop:
     ldm      r0, {r3, r4}
@@ -361,5 +307,3 @@ S32A_Opaque_BlitRow32_arm:
 .Lexit:
     pop      {r4-r11}
     bx       lr
-
-#endif
