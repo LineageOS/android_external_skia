@@ -60,24 +60,24 @@ S32A_Blend_BlitRow32_arm:
     vsub.u16 q5, q14, q5
 
     // multiply destination ARGB components with dst_scale
-    vmul.i16 q6, q6, q5
-    vmul.i16 q7, q7, q5
-    vmul.i16 q8, q8, q5
-    vmul.i16 q9, q9, q5
+    vmul.u16 q6, q6, q5
+    vmul.u16 q7, q7, q5
+    vmul.u16 q8, q8, q5
+    vmul.u16 q9, q9, q5
 
     // multiply source ARGB components with src_scale
-    vmul.i16 q10, q10, q4
-    vmul.i16 q11, q11, q4
-    vmul.i16 q12, q12, q4
-    vmul.i16 q13, q13, q4
+    vmul.u16 q10, q10, q4
+    vmul.u16 q11, q11, q4
+    vmul.u16 q12, q12, q4
+    vmul.u16 q13, q13, q4
 
     subs     r2, r2, #8
 
     // add processed src and dest pixels and extract high bytes
-    vadd.u8  q10, q6, q10
-    vadd.u8  q11, q7, q11
-    vadd.u8  q12, q8, q12
-    vadd.u8  q13, q9, q13
+    vqadd.u8  q10, q6, q10
+    vqadd.u8  q11, q7, q11
+    vqadd.u8  q12, q8, q12
+    vqadd.u8  q13, q9, q13
 
     vshrn.u16 d4, q10, #8
     vshrn.u16 d5, q11, #8
@@ -163,13 +163,13 @@ S32A_Blend_BlitRow32_arm:
 
     // combine RB and AG
     and      r11, r10, r11, lsr #8     //r8 = (RB>>8) & mask
-    and      r7, r6, r10, lsl #8       //r9 = AG & ~mask
+    and      r7, r7, r10, lsl #8       //r9 = AG & ~mask
 
     orr      r7, r7, r11
 
     // dst processing
     and      r8, r5, r10               //rb = (dst & mask)
-    and      r9, r10, r4, lsr #8       //ag = (dst>>8) & mask
+    and      r9, r10, r5, lsr #8       //ag = (dst>>8) & mask
 
     mul      r11, r8, lr              //RB = rb * dst_scale
     mul      r5, r9, lr               //AG = ag * dst_scale
