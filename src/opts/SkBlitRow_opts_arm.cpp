@@ -1093,11 +1093,7 @@ static const SkBlitRow::Proc32 platform_32_procs[] = {
     NULL,   // S32_Opaque,
     S32_Blend_BlitRow32_PROC,		// S32_Blend,
     S32A_Opaque_BlitRow32_PROC,		// S32A_Opaque,
-#if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
     S32A_Blend_BlitRow32_PROC,   // S32A_Blend,
-#else
-    NULL,
-#endif
 };
 
 SkBlitRow::Proc SkBlitRow::PlatformProcs4444(unsigned flags) {
