@@ -175,16 +175,19 @@ LOCAL_SRC_FILES:= \
 	src/utils/SkLayer.cpp \
 	src/utils/SkMeshUtils.cpp \
 	src/utils/SkNinePatch.cpp \
+        src/views/SkTextBox.cpp \
 	src/utils/SkProxyCanvas.cpp
+
+#added SkTextBox because its needed by libtvout from samsung
 
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_SRC_FILES += \
-	src/opts/SkBlitRow_opts_arm.cpp \
-	src/opts/SkBitmapProcState_opts_arm.cpp
+        src/opts/SkBlitRow_opts_arm.cpp \
+        src/opts/SkBitmapProcState_opts_arm.cpp
 else
 LOCAL_SRC_FILES += \
-	src/opts/SkBlitRow_opts_none.cpp \
-	src/opts/SkBitmapProcState_opts_none.cpp
+        src/opts/SkBlitRow_opts_none.cpp \
+        src/opts/SkBitmapProcState_opts_none.cpp
 endif
 
 # these are for emoji support, needed by webkit
@@ -195,9 +198,9 @@ LOCAL_SRC_FILES += \
 ifeq ($(TARGET_ARCH),arm)
 	LOCAL_CFLAGS += -D__CPU_ARCH_ARM
 	LOCAL_SRC_FILES += \
-		src/opts/S32A_D565_Opaque_arm.S \
-		src/opts/S32A_Opaque_BlitRow32_arm.S \
-		src/opts/S32A_Blend_BlitRow32_arm.S
+                src/opts/S32A_D565_Opaque_arm.S \
+                src/opts/S32A_Opaque_BlitRow32_arm.S \
+                src/opts/S32A_Blend_BlitRow32_arm.S
 endif
 
 # Added to build with the armv5te cflags changes.
@@ -217,44 +220,44 @@ endif
 
 ifeq ($(ARCH_ARMV6_ARMV7),true)
 	LOCAL_SRC_FILES += \
-		src/opts/S32_Opaque_D32_nofilter_DX_gether_arm.S
+                src/opts/S32_Opaque_D32_nofilter_DX_gether_arm.S
 endif
 
 
 ifeq ($(ARCH_ARM_HAVE_NEON),true)
 	LOCAL_SRC_FILES += \
-		src/opts/memset16_neon.S \
-		src/opts/memset32_neon.S
+                src/opts/memset16_neon.S \
+                src/opts/memset32_neon.S
 endif
 
 LOCAL_SHARED_LIBRARIES := \
-	libcutils \
+        libcutils \
         libemoji \
-	libjpeg \
-	libutils \
-	libz
+        libjpeg \
+        libutils \
+        libz
 
 LOCAL_STATIC_LIBRARIES := \
-	libft2 \
-	libpng \
-	libgif
+        libft2 \
+        libpng \
+        libgif
 
 LOCAL_C_INCLUDES += \
-	$(LOCAL_PATH)/src/core \
-	$(LOCAL_PATH)/include/core \
-	$(LOCAL_PATH)/include/effects \
-	$(LOCAL_PATH)/include/images \
-	$(LOCAL_PATH)/include/utils \
-	$(LOCAL_PATH)/include/xml \
-	external/freetype/include \
-	external/zlib \
-	external/libpng \
-	external/giflib \
-	external/jpeg \
-    frameworks/opt/emoji
+        $(LOCAL_PATH)/src/core \
+        $(LOCAL_PATH)/include/core \
+        $(LOCAL_PATH)/include/effects \
+        $(LOCAL_PATH)/include/images \
+        $(LOCAL_PATH)/include/utils \
+        $(LOCAL_PATH)/include/xml \
+        external/freetype/include \
+        external/zlib \
+        external/libpng \
+        external/giflib \
+        external/jpeg \
+        frameworks/opt/emoji
 
 ifeq ($(NO_FALLBACK_FONT),true)
-	LOCAL_CFLAGS += -DNO_FALLBACK_FONT
+        LOCAL_CFLAGS += -DNO_FALLBACK_FONT
 endif
 
 LOCAL_LDLIBS += -lpthread
@@ -280,25 +283,25 @@ ifeq ($(ARCH_ARM_HAVE_NEON),true)
 endif
 
 LOCAL_SRC_FILES:= \
-	src/gl/SkGL.cpp \
-	src/gl/SkGLCanvas.cpp \
-	src/gl/SkGLDevice.cpp \
-	src/gl/SkGLDevice_SWLayer.cpp \
-	src/gl/SkGLTextCache.cpp \
-	src/gl/SkTextureCache.cpp
+        src/gl/SkGL.cpp \
+        src/gl/SkGLCanvas.cpp \
+        src/gl/SkGLDevice.cpp \
+        src/gl/SkGLDevice_SWLayer.cpp \
+        src/gl/SkGLTextCache.cpp \
+        src/gl/SkTextureCache.cpp
 
 LOCAL_SHARED_LIBRARIES := \
-	libcutils \
-	libutils \
-	libskia \
-	libGLESv1_CM
+        libcutils \
+        libutils \
+        libskia \
+        libGLESv1_CM
 
 LOCAL_C_INCLUDES += \
-	$(LOCAL_PATH)/src/core \
-	$(LOCAL_PATH)/src/gl \
-	$(LOCAL_PATH)/include/core \
-	$(LOCAL_PATH)/include/effects \
-	$(LOCAL_PATH)/include/utils
+        $(LOCAL_PATH)/src/core \
+        $(LOCAL_PATH)/src/gl \
+        $(LOCAL_PATH)/include/core \
+        $(LOCAL_PATH)/include/effects \
+        $(LOCAL_PATH)/include/utils
 
 LOCAL_LDLIBS += -lpthread
 
