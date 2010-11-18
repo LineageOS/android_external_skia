@@ -282,12 +282,12 @@ ifeq ($(ARCH_ARM_HAVE_NEON),true)
 endif
 
 LOCAL_SRC_FILES:= \
-	src/gl/SkGL.cpp \
-	src/gl/SkGLCanvas.cpp \
-	src/gl/SkGLDevice.cpp \
-	src/gl/SkGLDevice_SWLayer.cpp \
-	src/gl/SkGLTextCache.cpp \
-	src/gl/SkTextureCache.cpp
+        src/gl/SkGL.cpp \
+        src/gl/SkGLCanvas.cpp \
+        src/gl/SkGLDevice.cpp \
+        src/gl/SkGLDevice_SWLayer.cpp \
+        src/gl/SkGLTextCache.cpp \
+        src/gl/SkTextureCache.cpp
 
 LOCAL_SHARED_LIBRARIES := \
         libcutils \
@@ -296,11 +296,11 @@ LOCAL_SHARED_LIBRARIES := \
         libGLESv1_CM
 
 LOCAL_C_INCLUDES += \
-	$(LOCAL_PATH)/src/core \
-	$(LOCAL_PATH)/src/gl \
-	$(LOCAL_PATH)/include/core \
-	$(LOCAL_PATH)/include/effects \
-	$(LOCAL_PATH)/include/utils
+        $(LOCAL_PATH)/src/core \
+        $(LOCAL_PATH)/src/gl \
+        $(LOCAL_PATH)/include/core \
+        $(LOCAL_PATH)/include/effects \
+        $(LOCAL_PATH)/include/utils
 
 LOCAL_LDLIBS += -lpthread
 
