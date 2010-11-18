@@ -181,12 +181,12 @@ LOCAL_SRC_FILES:= \
 
 ifeq ($(TARGET_ARCH),arm)
 LOCAL_SRC_FILES += \
-	src/opts/SkBlitRow_opts_arm.cpp \
-	src/opts/SkBitmapProcState_opts_arm.cpp
+        src/opts/SkBlitRow_opts_arm.cpp \
+        src/opts/SkBitmapProcState_opts_arm.cpp
 else
 LOCAL_SRC_FILES += \
-	src/opts/SkBlitRow_opts_none.cpp \
-	src/opts/SkBitmapProcState_opts_none.cpp
+        src/opts/SkBlitRow_opts_none.cpp \
+        src/opts/SkBitmapProcState_opts_none.cpp
 endif
 
 # these are for emoji support, needed by webkit
@@ -226,7 +226,7 @@ endif
 ifeq ($(ARCH_ARM_HAVE_NEON),true)
 	LOCAL_SRC_FILES += \
 		src/opts/memset16_neon.S \
-		src/opts/memset32_neon.S
+src/opts/memset32_neon.S
 endif
 
 LOCAL_SHARED_LIBRARIES := \
