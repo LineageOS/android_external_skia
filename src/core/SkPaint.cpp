@@ -31,7 +31,7 @@
 
 #define SK_DefaultTextSize      SkIntToScalar(12)
 
-#define SK_DefaultFlags         0   //(kNativeHintsText_Flag)
+#define SK_DefaultFlags         (kDither_Flag)   //(kNativeHintsText_Flag)
 
 SkPaint::SkPaint() {
     // since we may have padding, we zero everything so that our memcmp() call
