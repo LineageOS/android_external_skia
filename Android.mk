@@ -32,6 +32,10 @@ ifeq "$(findstring tegra,$(TARGET_BOARD_PLATFORM))" "tegra"
 	LOCAL_CFLAGS += -DTEST_SRC_ALPHA
 endif
 
+ifeq ($(TARGET_BOARD_PLATFORM),omap4)
+    LOCAL_CFLAGS += -DTARGET_OMAP4
+endif
+
 LOCAL_SRC_FILES:= \
 	src/core/Sk64.cpp \
 	src/core/SkBuffer.cpp \
@@ -241,6 +245,7 @@ LOCAL_SHARED_LIBRARIES := \
         libemoji \
         libjpeg \
         libutils \
+        libdl \
         libz
 
 LOCAL_STATIC_LIBRARIES := \
