@@ -32,6 +32,10 @@
     #define USE_BLACK_BLITTER
 #endif
 
+#ifdef NEEDS_ARM_ERRATA_754319_754320
+#define  VFP_NOP asm volatile ( "vmov s0,s0\n" )
+#endif
+
 void sk_dither_memset16(uint16_t dst[], uint16_t value, uint16_t other,
                         int count) {
     if (count > 0) {
@@ -231,6 +235,9 @@ void SkRGB16_Black_Blitter::blitMask(const SkMask& SK_RESTRICT mask,
             alpha += maskRB;
         } while (--height != 0);
     }
+#ifdef NEEDS_ARM_ERRATA_754319_754320
+    VFP_NOP;
+#endif
 }
 
 void SkRGB16_Black_Blitter::blitAntiH(int x, int y,
@@ -376,6 +383,9 @@ void SkRGB16_Opaque_Blitter::blitMask(const SkMask& SK_RESTRICT mask,
                                       const SkIRect& SK_RESTRICT clip) SK_RESTRICT {
     if (mask.fFormat == SkMask::kBW_Format) {
         SkRGB16_BlitBW(fDevice, mask, clip, fColor16);
+#ifdef NEEDS_ARM_ERRATA_754319_754320
+    VFP_NOP;
+#endif
         return;
     }
 
@@ -478,6 +488,9 @@ void SkRGB16_Opaque_Blitter::blitMask(const SkMask& SK_RESTRICT mask,
         device = (uint16_t*)((char*)device + deviceRB);
         alpha += maskRB;
     } while (--height != 0);
+#endif
+#ifdef NEEDS_ARM_ERRATA_754319_754320
+    VFP_NOP;
 #endif
 }
 
