@@ -577,10 +577,18 @@ static uint32_t pmcolor_to_expand16(SkPMColor c) {
 static inline void blend32_16_row(SkPMColor src, uint16_t dst[], int count) {
     SkASSERT(count > 0);
     uint32_t src_expand = pmcolor_to_expand16(src);
+    uint16_t old_origin_dst = 0xFFFF;
+    uint16_t last_dst = 0xFFFF;
+    uint16_t c = 0xFFFF;
     unsigned scale = SkAlpha255To256(0xFF - SkGetPackedA32(src)) >> 3;
     do {
-        uint32_t dst_expand = SkExpand_rgb_16(*dst) * scale;
-        *dst = SkCompact_rgb_16((src_expand + dst_expand) >> 5);
+        c = *dst;
+        if (old_origin_dst != c) {
+            uint32_t dst_expand = SkExpand_rgb_16(*dst) * scale;
+            last_dst = SkCompact_rgb_16((src_expand + dst_expand) >> 5);
+            old_origin_dst = c;
+        }
+        *dst = last_dst;
         dst += 1;
     } while (--count != 0);
 }
