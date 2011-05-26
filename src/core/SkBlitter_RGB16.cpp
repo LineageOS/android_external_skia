@@ -30,6 +30,7 @@
 #else
     // if we don't have neon, then our black blitter is worth the extra code
     #define USE_BLACK_BLITTER
+    #define UNROLL_BLACK_BLITTER
 #endif
 
 #ifdef NEEDS_ARM_ERRATA_754319_754320
@@ -698,16 +699,37 @@ void SkRGB16_Blitter::blitV(int x, int y, int height, SkAlpha alpha) {
     } while (--height != 0);
 }
 
+#define unlikely(x)     __builtin_expect((x),0)
+
 void SkRGB16_Blitter::blitRect(int x, int y, int width, int height) {
     SkASSERT(x + width <= fDevice.width() && y + height <= fDevice.height());
     uint16_t* SK_RESTRICT device = fDevice.getAddr16(x, y);
     unsigned    deviceRB = fDevice.rowBytes();
     SkPMColor src32 = fSrcColor32;
 
+#ifdef UNROLL_BLACK_BLITTER
+    if (unlikely(height == 0))
+        return;
+
+    if (height & 1) {
+        blend32_16_row(src32, device, width);
+        device = (uint16_t*)((char*)device + deviceRB);
+        height -= 1;
+    }
+
+    uint16_t* SK_RESTRICT deviceEnd = (uint16_t*)((char*) device + height * deviceRB);
+    while (device != deviceEnd) {
+        blend32_16_row(src32, device, width);
+        device = (uint16_t*)((char*)device + deviceRB);
+        blend32_16_row(src32, device, width);
+        device = (uint16_t*)((char*)device + deviceRB);
+    }
+#else
     while (--height >= 0) {
         blend32_16_row(src32, device, width);
         device = (uint16_t*)((char*)device + deviceRB);
     }
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
