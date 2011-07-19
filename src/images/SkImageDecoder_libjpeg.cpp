@@ -37,6 +37,11 @@ extern "C" {
 
 // Key to lookup the size of memory buffer set in system property
 static const char KEY_MEM_CAP[] = "ro.media.dec.jpeg.memcap";
+
+#ifdef OMAP_ENHANCEMENT
+static int usingHW=0;
+#endif
+
 #endif
 
 // this enables timing code to report milliseconds for an encode
@@ -277,7 +282,12 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
 #endif
 
     if (sampleSize == 1 && mode == SkImageDecoder::kDecodeBounds_Mode) {
+#ifdef OMAP_ENHANCEMENT
+    if(!usingHW)
+#endif
+    {
         bm->setConfig(config, cinfo.image_width, cinfo.image_height);
+    }
         bm->setIsOpaque(true);
         return true;
     }
@@ -300,7 +310,12 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
                 valid_output_dimensions(cinfo)) {
             SkScaledBitmapSampler smpl(cinfo.output_width, cinfo.output_height,
                                        recompute_sampleSize(sampleSize, cinfo));
+#ifdef OMAP_ENHANCEMENT
+        if(!usingHW)
+#endif
+        {
             bm->setConfig(config, smpl.scaledWidth(), smpl.scaledHeight());
+        }
             bm->setIsOpaque(true);
             return true;
         } else {
@@ -325,7 +340,12 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
         (config == SkBitmap::kRGB_565_Config && 
                 cinfo.out_color_space == JCS_RGB_565)))
     {
+#ifdef OMAP_ENHANCEMENT
+        if(!usingHW)
+#endif
+    {
         bm->setConfig(config, cinfo.output_width, cinfo.output_height);
+    }
         bm->setIsOpaque(true);
         if (SkImageDecoder::kDecodeBounds_Mode == mode) {
             return true;
@@ -373,8 +393,12 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
 
     SkScaledBitmapSampler sampler(cinfo.output_width, cinfo.output_height,
                                   sampleSize);
-
+#ifdef OMAP_ENHANCEMENT
+    if(!usingHW)
+#endif
+    {
     bm->setConfig(config, sampler.scaledWidth(), sampler.scaledHeight());
+    }
     // jpegs are always opauqe (i.e. have no per-pixel alpha)
     bm->setIsOpaque(true);
 
