@@ -12,6 +12,10 @@ LOCAL_ARM_MODE := arm
 # need a flag to tell the C side when we're on devices with large memory
 # budgets (i.e. larger than the low-end devices that initially shipped)
 ifeq ($(ARCH_ARM_HAVE_VFP),true)
+    TARGET_SKIA_USE_MORE_MEMORY := true
+endif
+
+ifeq ($(TARGET_SKIA_USE_MORE_MEMORY),true)
     LOCAL_CFLAGS += -DANDROID_LARGE_MEMORY_DEVICE
 endif
 
