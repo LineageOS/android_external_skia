@@ -141,7 +141,7 @@
 S32A_D565_Opaque_arm:
     stmfd	sp!, {r4-r10, lr}
 
-#if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
+#if defined(__ARM_NEON__)
     subs    r2, r2, #16
 
     blo     blit_less_than_16_left
@@ -247,7 +247,7 @@ blit_alpha_not_255:
 
     blo     blit_less_than_16_left
     b       blit_neon_loop
-#endif
+#endif /* __ARM_NEON__ */
 
 blit_less_than_16_left:
     pld     [r1]
@@ -256,7 +256,7 @@ blit_less_than_16_left:
     mov     r9,  #0x20
     mov     r10, #0xFF
 
-#if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
+#if defined(__ARM_NEON__)
     adds    r2, r2, #14
 #else
     subs    r2, r2, #2

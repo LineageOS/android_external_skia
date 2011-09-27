@@ -23,7 +23,7 @@
 S32A_Opaque_BlitRow32_arm:
 
     push     {r4-r11}
-#if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
+#if defined(__ARM_NEON__)
 
     cmp      r2,#24
     blt      .Lless_than_24
@@ -218,7 +218,7 @@ S32A_Opaque_BlitRow32_arm:
     bge      .Lloop_8
     b        .Lless_than_4
 
-#endif
+#endif /* __ARM_NEON__ */
 
 /*
  * r0 - dst

@@ -25,7 +25,7 @@ S32A_Blend_BlitRow32_arm:
     // calculate src_scale = aa + 1
     add      r3, r3, #1
 
-#if __ARM_ARCH__ == 7 || defined(__ARM_NEON__)
+#if defined(__ARM_NEON__)
 
     cmp     r2,#24
     blt      .Lslow_path
@@ -249,7 +249,7 @@ S32A_Blend_BlitRow32_arm:
 .Lslow_path:
     adds     r2, #0
     bxeq      lr
-#endif
+#endif /* __ARM_NEON__ */
 
 /*
  * r0 - dst
