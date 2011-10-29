@@ -30,7 +30,10 @@ endif
 
 ifeq ($(ARCH_ARM_HAVE_NEON),true)
 	LOCAL_CFLAGS += -D__ARM_HAVE_NEON
+	LOCAL_CFLAGS += -ftree-vectorize
 endif
+
+LOCAL_CFLAGS += -O3 -ffast-math -fsingle-precision-constant
 
 # special checks for alpha == 0 and alpha == 255 in S32A_Opaque_BlitRow32
 # procedures (C and assembly) seriously improve skia performance
