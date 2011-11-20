@@ -192,7 +192,10 @@ LOCAL_SRC_FILES:= \
 	src/utils/SkParse.cpp \
 	src/utils/SkParsePath.cpp \
 	src/utils/SkProxyCanvas.cpp \
+    src/views/SkTextBox.cpp \
 	src/utils/SkUnitMappers.cpp
+
+#added SkTextBox because its needed by libtvout from samsung
 
 ifeq ($(TARGET_ARCH),arm)
 
