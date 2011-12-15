@@ -23,6 +23,10 @@ ifeq ($(ARCH_ARM_HAVE_NEON),true)
 	LOCAL_CFLAGS += -D__ARM_HAVE_NEON
 endif
 
+ifeq ($(BOARD_USE_SKIA_LCDTEXT),true)
+	LOCAL_CFLAGS += -DSK_SUPPORT_LCDTEXT
+endif
+
 LOCAL_SRC_FILES:= \
 	src/core/Sk64.cpp \
 	src/core/SkBuffer.cpp \
@@ -194,6 +198,12 @@ LOCAL_SRC_FILES:= \
 	src/utils/SkProxyCanvas.cpp \
 	src/views/SkTextBox.cpp \
 	src/utils/SkUnitMappers.cpp
+
+ifeq ($(BOARD_USE_SKIA_LCDTEXT),true)
+LOCAL_SRC_FILES += \
+	src/core/SkBlitter_ARGB32_Subpixel.cpp \
+	src/ports/SkFontHost_FreeType_Subpixel.cpp
+endif
 
 #added SkTextBox because its needed by libtvout from samsung
 
