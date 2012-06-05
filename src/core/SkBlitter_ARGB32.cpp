@@ -20,6 +20,17 @@
 #include "SkShader.h"
 #include "SkUtils.h"
 #include "SkXfermode.h"
+#define LOG_TAG "SKIA"
+#include <utils/Log.h>
+#if defined(FIMG2D_ENABLED)
+#include "SkBitmap.h"
+#include "SkBitmapProcShader.h"
+#if defined(FIMG2D4X)
+#include "SkFimgApi4x.h"
+extern Fimg fimg;
+extern SkMutex gG2DMutex;
+#endif
+#endif
 
 #if defined(SK_SUPPORT_LCDTEXT)
 namespace skia_blitter_support {
@@ -255,7 +266,23 @@ void SkARGB32_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) {
     }
 
     if (mask.fFormat == SkMask::kBW_Format) {
+#if defined(FIMG2D4X)
+#if (FIMGAPI_G2D_BLOKING == TRUE)
+        gG2DMutex.acquire();
+#else
+        if (gG2DMutex.tryacquire() != 0) {
+            SkARGB32_BlendBW(fDevice, mask, clip, fPMColor, SkAlpha255To256(255 - fSrcA));
+            return;
+        }
+#endif
+        int retFimg = FimgARGB32_BW(fimg, fDevice, mask, clip, fPMColor, SkAlpha255To256(255 - fSrcA));
+        if (retFimg != FIMGAPI_FINISHED)
+            SkARGB32_BlendBW(fDevice, mask, clip, fPMColor, SkAlpha255To256(255 - fSrcA));
+
+        gG2DMutex.release();
+#else
         SkARGB32_BlendBW(fDevice, mask, clip, fPMColor, SkAlpha255To256(255 - fSrcA));
+#endif
         return;
     } else if (SkMask::kARGB32_Format == mask.fFormat) {
 		SkARGB32_Blit32(fDevice, mask, clip, fPMColor);
@@ -279,7 +306,23 @@ void SkARGB32_Opaque_Blitter::blitMask(const SkMask& mask,
     SkASSERT(mask.fBounds.contains(clip));
 
     if (mask.fFormat == SkMask::kBW_Format) {
+#if defined(FIMG2D4X)
+#if (FIMGAPI_G2D_BLOKING == TRUE)
+        gG2DMutex.acquire();
+#else
+        if (gG2DMutex.tryacquire() != 0) {
+            SkARGB32_BlitBW(fDevice, mask, clip, fPMColor);
+            return;
+        }
+#endif
+        int retFimg = FimgARGB32_BW(fimg, fDevice, mask, clip, fPMColor, SkAlpha255To256(255));
+        if (retFimg != FIMGAPI_FINISHED)
+            SkARGB32_BlitBW(fDevice, mask, clip, fPMColor);
+
+        gG2DMutex.release();
+#else
         SkARGB32_BlitBW(fDevice, mask, clip, fPMColor);
+#endif
         return;
     } else if (SkMask::kARGB32_Format == mask.fFormat) {
 		SkARGB32_Blit32(fDevice, mask, clip, fPMColor);
@@ -326,9 +369,76 @@ void SkARGB32_Opaque_Blitter::blitMask(const SkMask& mask,
     }
 #endif
 
+#if defined(FIMG2D4X)
+
+#if (FIMGAPI_G2D_BLOKING == TRUE)
+    gG2DMutex.acquire();
+#else
+    if (gG2DMutex.tryacquire() != 0) {
+        fBlitMaskProc(fDevice.getAddr32(x, y), fDevice.rowBytes(),
+                      SkBitmap::kARGB_8888_Config,
+                      mask.getAddr(x, y), mask.fRowBytes, fColor, width, height);
+        return;
+    }
+#endif
+
+    fimg.srcAddr        = (unsigned char *)NULL;
+
+    fimg.isSolidFill    = false;
+    fimg.fillcolor      = toARGB32(SkPreMultiplyColor(fColor));
+
+    fimg.srcColorFormat = fDevice.config();
+
+    fimg.dstX           = x;
+    fimg.dstY           = y;
+    fimg.dstW           = width;
+    fimg.dstH           = height;
+    fimg.dstFWStride    = fDevice.rowBytes();
+    fimg.dstFH          = fDevice.height();
+    fimg.dstBPP         = fDevice.bytesPerPixel();
+    fimg.dstColorFormat = fDevice.config();
+    fimg.dstAddr        = (unsigned char *)fDevice.getAddr(0,0);
+
+    fimg.clipT = y;
+    fimg.clipB = y + height;
+    fimg.clipL = x;
+    fimg.clipR = x + width;
+
+    fimg.mskX           = 0;
+    fimg.mskY           = 0;
+    fimg.mskW           = width;
+    fimg.mskH           = height;
+    fimg.mskFWStride    = mask.fRowBytes;
+    fimg.mskFH          = height;
+    fimg.mskBPP         = 1;
+    fimg.mskColorFormat = SkBitmap::kA8_Config;
+    fimg.mskAddr        = (unsigned char *)mask.getAddr(x, y);
+
+    fimg.rotate         = 0;
+
+    fimg.xfermode = SkXfermode::kSrcOver_Mode;
+    fimg.isDither = false;
+    fimg.colorFilter = NULL;
+    fimg.matrixType = 0;
+    fimg.matrixSx = 0;
+    fimg.matrixSy = 0;
+
+    fimg.alpha = 0xFF;
+
+    fimg.canusehybrid = 0;
+    int retFimg = FimgApiStretch(&fimg, __func__);
+    if (retFimg != FIMGAPI_FINISHED)
+        fBlitMaskProc(fDevice.getAddr32(x, y), fDevice.rowBytes(),
+                      SkBitmap::kARGB_8888_Config,
+                      mask.getAddr(x, y), mask.fRowBytes, fColor, width, height);
+
+    gG2DMutex.release();
+
+#else
     fBlitMaskProc(fDevice.getAddr32(x, y), fDevice.rowBytes(),
                   SkBitmap::kARGB_8888_Config,
                   mask.getAddr(x, y), mask.fRowBytes, fColor, width, height);
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -372,10 +482,33 @@ void SkARGB32_Blitter::blitRect(int x, int y, int width, int height) {
     uint32_t    color = fPMColor;
     size_t      rowBytes = fDevice.rowBytes();
 
+#if defined(FIMG2D4X)
+#if (FIMGAPI_G2D_BLOKING == TRUE)
+    gG2DMutex.acquire();
+#else
+    if (gG2DMutex.tryacquire() != 0) {
+        while (--height >= 0) {
+            fColor32Proc(device, device, width, color);
+            device = (uint32_t*)((char*)device + rowBytes);
+        }
+        return;
+    }
+#endif
+    int retFimg = FimgARGB32_Rect(fimg, fDevice.getAddr32(0, 0), x, y, width, height, rowBytes, color);
+    if (retFimg != FIMGAPI_FINISHED) {
+        while (--height >= 0) {
+            fColor32Proc(device, device, width, color);
+            device = (uint32_t*)((char*)device + rowBytes);
+        }
+    }
+
+    gG2DMutex.release();
+#else
     while (--height >= 0) {
         fColor32Proc(device, device, width, color);
         device = (uint32_t*)((char*)device + rowBytes);
     }
+#endif
 }
 
 #if defined _WIN32 && _MSC_VER >= 1300
@@ -390,7 +523,23 @@ void SkARGB32_Black_Blitter::blitMask(const SkMask& mask, const SkIRect& clip) {
     if (mask.fFormat == SkMask::kBW_Format) {
         SkPMColor black = (SkPMColor)(SK_A32_MASK << SK_A32_SHIFT);
 
+#if defined(FIMG2D4X)
+#if (FIMGAPI_G2D_BLOKING == TRUE)
+        gG2DMutex.acquire();
+#else
+        if (gG2DMutex.tryacquire() != 0) {
+            SkARGB32_BlitBW(fDevice, mask, clip, black);
+            return;
+        }
+#endif
+        int retFimg = FimgARGB32_BW(fimg, fDevice, mask, clip, fPMColor, SkAlpha255To256(255));
+        if (retFimg != FIMGAPI_FINISHED)
+            SkARGB32_BlitBW(fDevice, mask, clip, black);
+
+        gG2DMutex.release();
+#else
         SkARGB32_BlitBW(fDevice, mask, clip, black);
+#endif
     } else if (SkMask::kARGB32_Format == mask.fFormat) {
 		SkARGB32_Blit32(fDevice, mask, clip, fPMColor);
     } else if (SkMask::kLCD16_Format == mask.fFormat) {

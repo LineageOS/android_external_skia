@@ -62,7 +62,12 @@ public:
         : fRec(rec), fName(name) {}
 
     virtual bool allocPixelRef(SkBitmap* bm, SkColorTable* ct) {
+#if defined(FIMG2D3X)
+        const size_t size = roundToPageSize(bm->getSize() + 8);
+#else
         const size_t size = roundToPageSize(bm->getSize());
+#endif
+
         int fd = fRec->fFD;
         void* addr = fRec->fAddr;
 
@@ -90,6 +95,9 @@ public:
             }
             
             addr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+#if defined(FIMG2D3X)
+            memset(addr+(size-8), 0x0, 8);
+#endif
             if (-1 == (long)addr) {
                 SkDebugf("---------- mmap failed for imageref_ashmem size=%d err=%d\n",
                          size, errno);

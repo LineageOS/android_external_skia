@@ -26,11 +26,33 @@
 #include "SkRect.h"
 #include "SkCanvas.h"
 
+#ifdef SEC_SKIAHWJPEG
+#ifdef SAMSUNG_EXYNOS4x12
+#include "SkFimpV2x.h"
+#endif // SAMSUNG_EXYNOS4x12
+#ifdef SAMSUNG_EXYNOS5250
+#include "SecJpegDecoderForSkia.h"
+#include "csc_swap_neon.h"
+#endif // SAMSUNG_EXYNOS5250
+#endif
+
 #include <stdio.h>
 extern "C" {
     #include "jpeglib.h"
     #include "jerror.h"
+#ifdef SEC_SKIAHWJPEG
+    #include <cutils/log.h>
+#endif
 }
+
+#ifdef SEC_HWJPEG_G2D
+#if defined(SAMSUNG_EXYNOS4210)
+#include "SkFimgApi3x.h"
+#endif
+#if defined(SAMSUNG_EXYNOS4x12)
+#include "SkFimgApi4x.h"
+#endif
+#endif
 
 #ifdef ANDROID
 #include <cutils/properties.h>
@@ -282,6 +304,185 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
         return true;
     }
 
+#ifdef SEC_SKIAHWJPEG
+
+#ifdef SAMSUNG_EXYNOS5250
+
+#define JPEG_ERROR_LOG(fmt,...)
+
+    int jpeg_ret = 0;
+
+    SecJpegDecoderForSkia *pcSecJpeg = NULL;
+
+    pcSecJpeg = new SecJpegDecoderForSkia;
+
+    if (pcSecJpeg->checkHwJPEGSupport(config, &cinfo, sampleSize) == false) {
+        pcSecJpeg->setHwJPEGFlag(false);
+        goto SWJPEG;
+    }
+
+    if (pcSecJpeg->isHwJPEG()) {
+        bm->lockPixels();
+        JSAMPLE* rowptr = (JSAMPLE*)bm->getPixels();
+        bm->unlockPixels();
+        bool reuseBitmap = (rowptr != NULL);
+        if (reuseBitmap && ((int) cinfo.output_width != bm->width() ||
+                (int) cinfo.output_height != bm->height())) {
+            // Dimensions must match
+            delete pcSecJpeg;
+            return false;
+        }
+
+        if (reuseBitmap == false) {
+            bm->setConfig(config, cinfo.output_width, cinfo.output_height);
+            bm->setIsOpaque(true);
+            if (SkImageDecoder::kDecodeBounds_Mode == mode) {
+                delete pcSecJpeg;
+                return true;
+            }
+            if (!this->allocPixelRef(bm, NULL)) {
+                delete pcSecJpeg;
+                return return_false(cinfo, *bm, "allocPixelRef");
+            }
+        } else if (SkImageDecoder::kDecodeBounds_Mode == mode) {
+            delete pcSecJpeg;
+            return true;
+        }
+        SkAutoLockPixels alp(*bm);
+        rowptr = (JSAMPLE*)bm->getPixels();
+
+        if (pcSecJpeg->setHwJPEGInputBuffer((char *)stream->getMemoryBase(), stream->getLength())) {
+            pcSecJpeg->setHwJPEGFlag(false);
+            JPEG_ERROR_LOG("[%s]JPEG Decode IN Buffer set failed", __func__);
+            goto SWJPEG;
+        }
+
+        if (pcSecJpeg->setHwJPEGOutputBuffer((char *)rowptr, bm->getSize())) {
+            pcSecJpeg->setHwJPEGFlag(false);
+            JPEG_ERROR_LOG("[%s]JPEG Decode OUT Buffer alloc failed", __func__);
+            goto SWJPEG;
+        }
+
+        if (pcSecJpeg->setDecodeHwJPEGConfig(config, &cinfo, stream)) {
+            pcSecJpeg->setHwJPEGFlag(false);
+            JPEG_ERROR_LOG("[%s]JPEG Decode Setup failed", __func__);
+            goto SWJPEG;
+        }
+
+        if (pcSecJpeg->executeDecodeHwJPEG()) {
+            pcSecJpeg->setHwJPEGFlag(false);
+            JPEG_ERROR_LOG("[%s]JPEG Decode EXE failed", __func__);
+            goto SWJPEG;
+        }
+
+        pcSecJpeg->outputJpeg(bm, rowptr);
+
+        jpeg_destroy_decompress(&cinfo);
+
+        delete pcSecJpeg;
+
+        if (reuseBitmap) {
+            bm->notifyPixelsChanged();
+        }
+
+        return true;
+    }
+
+SWJPEG:
+    if (pcSecJpeg) {
+        pcSecJpeg->setHwJPEGFlag(false);
+        delete pcSecJpeg;
+    }
+#endif // SAMSUNG_EXYNOS5250
+
+#ifdef SAMSUNG_EXYNOS4x12
+    const void *jpeg_out;
+    int jpeg_ret = 0;
+
+    SecJPEGCodec *sec_jpeg = new SecJPEGCodec;
+
+    jpeg_ret = sec_jpeg->checkHwJPEGSupport(config, &cinfo, sampleSize);
+    if (jpeg_ret != true) {
+        sec_jpeg->setHwJPEGFlag(false);
+        goto SWJPEG;
+    }
+
+    if (sec_jpeg->isHwJPEG() == true) {
+        jpeg_ret = sec_jpeg->setDecodeHwJPEGConfig(config, &cinfo, stream);
+        if (jpeg_ret < 0) {
+            sec_jpeg->setHwJPEGFlag(false);
+            LOGE("[%s]JPEG Decode Setup failed", __func__);
+            goto SWJPEG;
+        }
+
+        jpeg_ret = sec_jpeg->setHwJPEGInputBuffer(stream);
+        if (jpeg_ret < 0) {
+            sec_jpeg->setHwJPEGFlag(false);
+            LOGD("[%s]JPEG Decode IN Buffer alloc failed", __func__);
+            return false;
+        }
+
+        jpeg_out = sec_jpeg->setHwJPEGOutputBuffer();
+        if (jpeg_out <= 0) {
+            sec_jpeg->setHwJPEGFlag(false);
+            LOGE("[%s]JPEG Decode OUT Buffer alloc failed", __func__);
+            return false;
+        }
+
+        jpeg_ret = sec_jpeg->executeDecodeHwJPEG();
+        if (jpeg_ret < 0) {
+            sec_jpeg->setHwJPEGFlag(false);
+            LOGE("[%s]JPEG Decode EXE failed", __func__);
+            return false;
+        }
+    }
+
+    if (sec_jpeg->isHwJPEG() == true) {
+        bm->lockPixels();
+        JSAMPLE* rowptr = (JSAMPLE*)bm->getPixels();
+        bm->unlockPixels();
+        bool reuseBitmap = (rowptr != NULL);
+        if (reuseBitmap && ((int) cinfo.output_width != bm->width() ||
+                (int) cinfo.output_height != bm->height())) {
+            // Dimensions must match
+            delete sec_jpeg;
+            return false;
+        }
+
+        if (!reuseBitmap) {
+            bm->setConfig(config, cinfo.output_width, cinfo.output_height);
+            bm->setIsOpaque(true);
+            if (SkImageDecoder::kDecodeBounds_Mode == mode) {
+                delete sec_jpeg;
+                return true;
+            }
+            if (!this->allocPixelRef(bm, NULL)) {
+                delete sec_jpeg;
+                return return_false(cinfo, *bm, "allocPixelRef");
+            }
+        } else if (SkImageDecoder::kDecodeBounds_Mode == mode) {
+            delete sec_jpeg;
+            return true;
+        }
+        SkAutoLockPixels alp(*bm);
+        rowptr = (JSAMPLE*)bm->getPixels();
+
+        sec_jpeg->outputJpeg(bm, rowptr);
+
+        jpeg_destroy_decompress(&cinfo);
+
+        delete sec_jpeg;
+
+        if (reuseBitmap) {
+            bm->notifyPixelsChanged();
+        }
+
+        return true;
+    }
+SWJPEG:
+    delete sec_jpeg;
+#endif // SAMSUNG_EXYNOS4x12
+#endif // SEC_SKIAHWJPEG
     /*  image_width and image_height are the original dimensions, available
         after jpeg_read_header(). To see the scaled dimensions, we have to call
         jpeg_start_decompress(), and then read output_width and output_height.
@@ -320,9 +521,9 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
        a significant performance boost.
     */
     if (sampleSize == 1 &&
-        ((config == SkBitmap::kARGB_8888_Config && 
+        ((config == SkBitmap::kARGB_8888_Config &&
                 cinfo.out_color_space == JCS_RGBA_8888) ||
-        (config == SkBitmap::kRGB_565_Config && 
+        (config == SkBitmap::kRGB_565_Config &&
                 cinfo.out_color_space == JCS_RGB_565)))
     {
         bm->lockPixels();
@@ -350,7 +551,7 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
         SkAutoLockPixels alp(*bm);
         rowptr = (JSAMPLE*)bm->getPixels();
         INT32 const bpr =  bm->rowBytes();
-        
+
         while (cinfo.output_scanline < cinfo.output_height) {
             int row_count = jpeg_read_scanlines(&cinfo, &rowptr, 1);
             // if row_count == 0, then we didn't get a scanline, so abort.
@@ -370,7 +571,7 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
         return true;
     }
 #endif
-    
+
     // check for supported formats
     SkScaledBitmapSampler::SrcConfig sc;
     if (3 == cinfo.out_color_components && JCS_RGB == cinfo.out_color_space) {
@@ -416,7 +617,7 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
         return true;
     }
 
-    SkAutoLockPixels alp(*bm);                          
+    SkAutoLockPixels alp(*bm);
     if (!sampler.begin(bm, sc, this->getDitherImage())) {
         return return_false(cinfo, *bm, "sampler.begin");
     }
@@ -438,7 +639,7 @@ bool SkJPEGImageDecoder::onDecode(SkStream* stream, SkBitmap* bm, Mode mode) {
         if (this->shouldCancelDecode()) {
             return return_false(cinfo, *bm, "shouldCancelDecode");
         }
-        
+
         sampler.next(srcRow);
         if (bm->height() - 1 == y) {
             // we're done

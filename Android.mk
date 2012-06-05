@@ -293,10 +293,73 @@ ifeq ($(NO_FALLBACK_FONT),true)
 	LOCAL_CFLAGS += -DNO_FALLBACK_FONT
 endif
 
+###################### G2D ################
+ifeq ($(BOARD_USES_FIMGAPI),true)
+ifeq ($(filter-out exynos4,$(TARGET_BOARD_PLATFORM)),)
+LOCAL_CFLAGS += -DFIMG2D_ENABLED
+ifeq ($(TARGET_SOC), exynos4210)
+LOCAL_CFLAGS += -DSAMSUNG_EXYNOS4210
+LOCAL_C_INCLUDES += $(TARGET_HAL_PATH)/libfimg3x
+LOCAL_SRC_FILES += \
+	src/core/SkFimgApi3x.cpp
+LOCAL_CFLAGS += -DFIMG2D3X
+endif
+ifeq ($(TARGET_SOC), exynos4x12)
+LOCAL_CFLAGS += -DSAMSUNG_EXYNOS4x12
+LOCAL_C_INCLUDES += $(TARGET_HAL_PATH)/libfimg4x
+LOCAL_SRC_FILES += \
+	src/core/SkFimgApi4x.cpp
+LOCAL_CFLAGS += -DFIMG2D4X
+endif
+LOCAL_SHARED_LIBRARIES += libfimg
+endif
+ifeq ($(filter-out exynos5,$(TARGET_BOARD_PLATFORM)),)
+LOCAL_CFLAGS += -DFIMG2D_ENABLED
+ifeq ($(TARGET_SOC), exynos5250)
+LOCAL_CFLAGS += -DSAMSUNG_EXYNOS5250
+LOCAL_C_INCLUDES += $(TARGET_HAL_PATH)/libfimg4x
+LOCAL_SRC_FILES += \
+	src/core/SkFimgApi4x.cpp
+LOCAL_CFLAGS += -DFIMG2D4X
+endif
+LOCAL_SHARED_LIBRARIES += libfimg
+endif
+endif
+###################### SEC HW JPEG ##########################
+ifeq ($(BOARD_USES_SKIAHWJPEG),true)
+ifeq ($(filter-out exynos4,$(TARGET_BOARD_PLATFORM)),)
+ifeq ($(TARGET_SOC), exynos4x12)
+LOCAL_CFLAGS += -DSEC_SKIAHWJPEG
+LOCAL_CFLAGS += -DSAMSUNG_EXYNOS4x12
+LOCAL_C_INCLUDES += $(TARGET_HAL_PATH)/include
+LOCAL_SRC_FILES += \
+	src/images/SkFimpV2x.cpp \
+	src/images/csc_swap_1st_3rd_byte_neon.s \
+	src/images/csc_swap_1st_3rd_byte_mask_neon.s
+LOCAL_SHARED_LIBRARIES += libhwjpeg
+endif
+endif
+endif
+
+ifeq ($(BOARD_USES_HWJPEG),true)
+ifeq ($(BOARD_USES_SKIAHWJPEG),true)
+ifeq ($(filter-out exynos5,$(TARGET_BOARD_PLATFORM)),)
+ifeq ($(TARGET_SOC), exynos5250)
+LOCAL_CFLAGS += -DSEC_SKIAHWJPEG
+LOCAL_CFLAGS += -DSAMSUNG_EXYNOS5250
+LOCAL_C_INCLUDES += $(TARGET_HAL_PATH)/include
+LOCAL_SRC_FILES += \
+	src/images/SecJpegDecoderForSkia.cpp \
+	src/images/csc_swap_1st_3rd_byte_neon.s \
+	src/images/csc_swap_1st_3rd_byte_mask_neon.s
+LOCAL_SHARED_LIBRARIES += libhwjpeg  libion
+endif
+endif
+endif
+endif
+
 LOCAL_LDLIBS += -lpthread
-
 LOCAL_MODULE:= libskia
-
 include $(BUILD_SHARED_LIBRARY)
 
 #############################################################

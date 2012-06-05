@@ -254,12 +254,23 @@ void sk_free(void* p)
 void* sk_malloc_flags(size_t size, unsigned flags)
 {
     ValidateHeap();
+
 #ifdef SK_TAG_BLOCKS
     size_t realSize = size;
     size += sizeof(SkBlockHeader);
 #endif
     
     void* p = malloc(size);
+
+#if defined(FIMG2D3X)
+    if (!p) {
+        if((((int) p + size) % 4096 == 0) || (((int) p + size) % 4096 > 4088)) {
+            p = realloc(p, size + 8);
+            memset(p + size, 0x0, 8);
+        }
+    }
+#endif
+
     if (p == NULL)
     {
         if (flags & SK_MALLOC_THROW)
