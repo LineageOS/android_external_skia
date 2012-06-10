@@ -1,0 +1,8 @@
+Change-Id: Ic18a35419d33aaedfc1c035b8e3b7e37c4886d84
+Code-Review+2: Steve Kondik <shade@chemlab.org>
+Verified+1: Steve Kondik <shade@chemlab.org>
+Submitted-by: Steve Kondik <shade@chemlab.org>
+Submitted-at: Sun, 10 Jun 2012 06:54:18 +0400
+Reviewed-on: http://review.cyanogenmod.com/17372
+Project: CyanogenMod/android_external_skia
+Branch: refs/heads/ics
