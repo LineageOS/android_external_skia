@@ -15,6 +15,7 @@
 #include "SkPictureFlat.h"
 #include "SkTemplates.h"
 #include "SkWriter32.h"
+#include "SkAltRecordingData.h"
 
 class SkPictureStateTree;
 class SkBBoxHierarchy;
@@ -81,7 +82,6 @@ public:
     const SkTDArray<SkPicture* >& getPictureRefs() const {
         return fPictureRefs;
     }
-
     void setFlags(uint32_t recordFlags) {
         fRecordFlags = recordFlags;
     }
@@ -92,6 +92,7 @@ public:
 
     void beginRecording();
     void endRecording();
+    SkAltRecordingData fData;
 
 private:
     void recordRestoreOffsetPlaceholder(SkRegion::Op);

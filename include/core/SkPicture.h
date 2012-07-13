@@ -20,6 +20,7 @@ class SkPicturePlayback;
 class SkPictureRecord;
 class SkStream;
 class SkWStream;
+class SkAltCanvas;
 
 /** \class SkPicture
 
@@ -142,6 +143,8 @@ public:
      */
     void serialize(SkWStream*, SkSerializationHelpers::EncodeBitmap encoder = NULL) const;
 
+     bool canUseGpuRendering();
+     void drawAltCanvas(SkAltCanvas* surface);
 #ifdef SK_BUILD_FOR_ANDROID
     /** Signals that the caller is prematurely done replaying the drawing
         commands. This can be called from a canvas virtual while the picture

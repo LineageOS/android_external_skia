@@ -303,6 +303,9 @@ LOCAL_SRC_FILES:= \
 	src/utils/SkBase64.cpp \
 	src/utils/SkBitmapTransformer.cpp \
 	src/utils/SkBitSet.cpp \
+	src/core/SkAltCanvas.cpp \
+	src/core/SkRecordingData.cpp \
+	src/core/SkAltRecordingData.cpp \
 	src/utils/SkBoundaryPatch.cpp \
 	src/utils/SkCamera.cpp \
 	src/utils/SkCubicInterval.cpp \
