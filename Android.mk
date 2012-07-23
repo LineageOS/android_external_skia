@@ -419,6 +419,10 @@ LOCAL_SRC_FILES += \
 	src/gpu/gl/debug/GrDebugGL.cpp \
 	src/gpu/gl/android/GrGLCreateNativeInterface_android.cpp
 
+ifeq ($(BOARD_USES_SKTEXTBOX),true)
+LOCAL_SRC_FILES += \
+	src/views/SkTextBox.cpp
+endif
 
 ifeq ($(TARGET_ARCH),arm)
 
