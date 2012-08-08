@@ -54,6 +54,7 @@ class SkAltCanvas : public SkCanvas{
         virtual SkIRect& getPrimitiveTexCoord(int i)    {   return mPrimitivesTexCoords[i]; }
         virtual int& getScaleX(int i)           {   return mXScale[i];  }
         virtual int& getScaleY(int i)           {   return mYScale[i];  }
+        virtual SkMatrix& getMatrix(int i)      {   return mMatrices[i];    }
 
     protected:
         SkTDArray<SkBitmap*> mBitmaps;
@@ -63,6 +64,7 @@ class SkAltCanvas : public SkCanvas{
         SkTDArray<SkIRect> mPrimitivesTexCoords;
         SkTDArray<int> mXScale;
         SkTDArray<int> mYScale;
+        SkTDArray<SkMatrix> mMatrices;
         uint mNumBitmaps;
         uint mNumPrimitives;
 };

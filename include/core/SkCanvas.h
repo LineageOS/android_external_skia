@@ -977,6 +977,7 @@ public:
         SkPaint           fDefaultPaint;
         bool              fDone;
     };
+ SkDevice* setBitmapDevice(const SkBitmap& bitmap);
 
 protected:
     // Returns the canvas to be used by DrawIter. Default implementation
@@ -1008,6 +1009,7 @@ protected:
      device, its reference count is decremented. The new device is returned.
      */
     virtual SkDevice* setDevice(SkDevice* device);
+
 
 #ifdef SK_BUILD_FOR_ANDROID
     friend class WebCore::GaneshRenderer;

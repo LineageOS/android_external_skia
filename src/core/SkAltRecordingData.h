@@ -37,7 +37,7 @@ class SkAltRecordingData: public SkRecordingData {
         SkAltRecordingData();
         virtual ~SkAltRecordingData();
 
-        virtual bool canUseGpuRendering() __attribute__((weak));
+        virtual bool canUseGpuRendering() const __attribute__((weak));
 };
 
 #endif

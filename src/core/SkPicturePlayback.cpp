@@ -24,8 +24,10 @@ template <typename T> int SafeCount(const T* obj) {
     a save/restore block because a clip... command returned false (empty).
  */
 #define SPEW_CLIP_SKIPPINGx
+extern bool SkAltRecordingDataPerfCanvas() __attribute__((weak));
 
 SkPicturePlayback::SkPicturePlayback() {
+    fCanUseGpuRendering = false;
     this->init();
 }
 
@@ -66,6 +68,9 @@ SkPicturePlayback::SkPicturePlayback(const SkPictureRecord& record, bool deepCop
     record.dumpMatrices();
     record.dumpPaints();
 #endif
+
+    if(SkAltRecordingDataPerfCanvas)
+        fCanUseGpuRendering = (record.fData).canUseGpuRendering();
 
     record.validate();
     const SkWriter32& writer = record.writeStream();

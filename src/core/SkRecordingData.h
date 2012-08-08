@@ -70,7 +70,7 @@ class SkRecordingData{
         virtual void addDrawData()              {   ++n_drawdata;   }
         virtual void addCompressedBitmap()      {   ++n_compressedbitmaps;  }
 
-        virtual bool canUseGpuRendering()      {   return false;   }
+        virtual bool canUseGpuRendering() const      {   return false;   }
 
     protected:
         //keep track of what kind of commands are being recorded
