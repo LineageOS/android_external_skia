@@ -768,6 +768,14 @@ void S32_Blend_BlitRow32_neon(SkPMColor* SK_RESTRICT dst,
     }
 }
 
+#if defined(ENABLE_OPTIMIZED_S32A_BLITTERS)
+/* External function in file S32A_Blend_BlitRow32_neon.S */
+extern "C" void S32A_Blend_BlitRow32_neon(SkPMColor* SK_RESTRICT dst,
+                                          const SkPMColor* SK_RESTRICT src,
+                                          int count, U8CPU alpha);
+
+#else
+
 void S32A_Blend_BlitRow32_neon(SkPMColor* SK_RESTRICT dst,
                          const SkPMColor* SK_RESTRICT src,
                          int count, U8CPU alpha) {
@@ -859,6 +867,7 @@ void S32A_Blend_BlitRow32_neon(SkPMColor* SK_RESTRICT dst,
         } while(count);
     }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
