@@ -364,6 +364,16 @@ static const SkBlitRow::Proc sk_blitrow_platform_565_procs_arm[] = {
     NULL,   // S32A_D565_Blend_Dither
 };
 
+#if defined(__ARM_HAVE_NEON) && defined(SK_CPU_LENDIAN) && defined(ENABLE_OPTIMIZED_S32A_BLITTERS)
+
+/* External function in file S32A_Opaque_BlitRow32_neon.S */
+			extern "C" void S32A_Opaque_BlitRow32_neon(SkPMColor* SK_RESTRICT dst,
+                                           const SkPMColor* SK_RESTRICT src,
+                                           int count, U8CPU alpha);
+
+#define S32A_Opaque_BlitRow32_PROC  S32A_Opaque_BlitRow32_neon
+#endif
+
 static const SkBlitRow::Proc32 sk_blitrow_platform_32_procs_arm[] = {
     NULL,   // S32_Opaque,
     NULL,   // S32_Blend,
