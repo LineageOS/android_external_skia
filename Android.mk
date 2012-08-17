@@ -266,6 +266,12 @@ ifeq ($(ARCH_ARM_HAVE_NEON),true)
 LOCAL_SRC_FILES += \
 	src/opts/memset16_neon.S \
 	src/opts/memset32_neon.S
+
+ifeq ($(BOARD_USE_NEON_BLITANTIH),true)
+LOCAL_CFLAGS += -DNEON_BLITANTIH
+LOCAL_SRC_FILES += \
+	src/core/asm/SkBlitter_RGB16_NEON.S
+endif
 endif
 
 LOCAL_SRC_FILES += \
