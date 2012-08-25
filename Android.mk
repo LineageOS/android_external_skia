@@ -351,6 +351,14 @@ endif
 
 LOCAL_LDLIBS += -lpthread
 
+# for FIMG2D acceleration #
+ifeq ($(BOARD_USES_FIMGAPI),true)
+LOCAL_CFLAGS += -DFIMG2D_ENABLED
+LOCAL_C_INCLUDES += hardware/samsung/exynos4/hal/libfimg4x
+LOCAL_SRC_FILES += src/core/SkFimgApi4x.cpp
+LOCAL_SHARED_LIBRARIES += libfimg
+endif
+
 LOCAL_MODULE:= libskia
 
 include $(BUILD_SHARED_LIBRARY)
