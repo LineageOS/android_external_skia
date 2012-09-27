@@ -1,0 +1,8 @@
+Change-Id: I6ab870723b749ffd632fecd648704d80b581fcf0
+Code-Review+2: Steve Kondik <shade@chemlab.org>
+Verified+1: Steve Kondik <shade@chemlab.org>
+Submitted-by: Steve Kondik <shade@chemlab.org>
+Submitted-at: Wed, 26 Sep 2012 20:47:04 -0700
+Reviewed-on: http://review.cyanogenmod.com/23974
+Project: CyanogenMod/android_external_skia
+Branch: refs/heads/jellybean
