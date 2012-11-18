@@ -15,8 +15,6 @@
 #include "SkXfermode.h"
 #include "SkString.h"
 
-#include <pthread.h>
-
 class SkAutoGlyphCache;
 class SkColorFilter;
 class SkDescriptor;
@@ -38,25 +36,6 @@ typedef const SkGlyph& (*SkDrawCacheProc)(SkGlyphCache*, const char**,
                                            SkFixed x, SkFixed y);
 
 typedef const SkGlyph& (*SkMeasureCacheProc)(SkGlyphCache*, const char**);
-
-class SkTextLocale {
-    public:
-        SkTextLocale();
-
-    SkString s;
-    SkTextLocale *next;
-};
-
-class SkTextLocales {
-public:
-    SkTextLocales();
-    SkTextLocale * setTextLocale( const SkString& locale );
-    SkString& getTextLocale( SkTextLocale * t );
-
-private:
-    SkTextLocale * LocaleArray;
-    pthread_mutex_t update_mutex;
-};
 
 /** \class SkPaint
 
@@ -680,7 +659,7 @@ public:
     /** Return the paint's text locale value.
         @return the paint's text locale value used for drawing text.
     */
-    const SkString& getTextLocale();
+    const SkString& getTextLocale() const { return fTextLocale; }
 
     /** Set the paint's text locale.
         @param locale set the paint's locale value for drawing text.
@@ -901,8 +880,6 @@ public:
     bool nothingToDraw() const;
 
 private:
-    //Be noted to update SkPaint::SkPaint(const SkPaint& src) copy
-    //constructor when struture is changed for fast path!
     SkTypeface*     fTypeface;
     SkScalar        fTextSize;
     SkScalar        fTextScaleX;
@@ -928,7 +905,7 @@ private:
     unsigned        fTextEncoding : 2;  // 3 values
     unsigned        fHinting : 2;
 #ifdef SK_BUILD_FOR_ANDROID
-    SkTextLocale*   fpTextLocale;
+    SkString        fTextLocale;
 #endif
 
     SkDrawCacheProc    getDrawCacheProc() const;
