@@ -227,6 +227,7 @@ void highQualityFilter32(const SkBitmapProcState &s, int x, int y,
                          SkPMColor *SK_RESTRICT colors, int count);
 void highQualityFilter16(const SkBitmapProcState &s, int x, int y,
                          uint16_t *SK_RESTRICT colors, int count);
-
+void S32_opaque_D32_nofilter_DX(const SkBitmapProcState& s, const uint32_t xy[],
+                                int count, SkPMColor colors[]);
 
 #endif
