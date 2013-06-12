@@ -415,6 +415,16 @@ struct SK_API SkRect {
      */
     bool isFinite() const {
 #ifdef SK_SCALAR_IS_FLOAT
+#if defined(KRAIT_OPTIMIZATION)
+        if (SkScalarIsFinite(fBottom) &&
+                SkScalarIsFinite(fRight) &&
+                SkScalarIsFinite(fLeft) &&
+                SkScalarIsFinite(fTop)) {
+            return true;
+        } else {
+            return false;
+        }
+#else
         float accum = 0;
         accum *= fLeft;
         accum *= fTop;
@@ -427,6 +437,7 @@ struct SK_API SkRect {
         // value==value will be true iff value is not NaN
         // TODO: is it faster to say !accum or accum==accum?
         return accum == accum;
+#endif //#if defined(KRAIT_OPTIMIZATION)
 #else
         // use bit-or for speed, since we don't care about short-circuting the
         // tests, and we expect the common case will be that we need to check all.

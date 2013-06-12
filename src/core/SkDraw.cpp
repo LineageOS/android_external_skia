@@ -128,7 +128,21 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 SkDraw::SkDraw() {
-    sk_bzero(this, sizeof(*this));
+    //Be noted to update this field when struture is changed!
+    if( sizeof(*this) == 32 ){
+        fBitmap     = NULL;
+        fMatrix     = NULL;
+        fClip       = NULL;
+        fRC         = NULL;
+
+        fClipStack  = NULL;
+        fDevice     = NULL;
+        fBounder    = NULL;
+        fProcs      = NULL;
+
+    } else {
+        sk_bzero(this, sizeof(*this));
+    }
 }
 
 SkDraw::SkDraw(const SkDraw& src) {
