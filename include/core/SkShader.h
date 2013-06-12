@@ -170,6 +170,9 @@ public:
     typedef void (*ShadeProc)(void* ctx, int x, int y, SkPMColor[], int count);
     virtual ShadeProc asAShadeProc(void** ctx);
 
+    virtual void beginRect(int x, int y, int width, int height);
+    virtual void endRect();
+
     /**
      *  Called only for 16bit devices when getFlags() returns
      *  kOpaqueAlphaFlag | kHasSpan16_Flag
@@ -342,6 +345,13 @@ public:
 
     SkDEVCODE(virtual void toString(SkString* str) const;)
 
+    enum SkShaderIds {
+        kSkBitmapProcShader_Class = 0x1,
+        kSkShader_OtherClass      = 0x2,
+    };
+
+    virtual SkShaderIds getID() { return kSkShader_OtherClass; }
+
 protected:
     enum MatrixClass {
         kLinear_MatrixClass,            // no perspective
@@ -358,6 +368,7 @@ protected:
 
     SkShader(SkFlattenableReadBuffer& );
     virtual void flatten(SkFlattenableWriteBuffer&) const SK_OVERRIDE;
+
 private:
     SkMatrix            fLocalMatrix;
     SkMatrix            fTotalInverse;

@@ -35,6 +35,13 @@ public:
 #if SK_SUPPORT_GPU
     GrEffectRef* asNewEffect(GrContext*, const SkPaint&) const SK_OVERRIDE;
 #endif
+    // override beginRect and endRect
+    virtual void beginRect(int x, int y, int width, int height);
+    virtual void endRect();
+
+
+    virtual SkShaderIds getID() { return kSkBitmapProcShader_Class; }
+
 
 protected:
     SkBitmapProcShader(SkFlattenableReadBuffer& );

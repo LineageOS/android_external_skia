@@ -97,6 +97,11 @@ struct SkBitmapProcState {
      */
     void platformProcs();
 
+    /* Perform rectaingle geometry specific setup/cleanup */
+    void beginRect(int x, int y, int width, int height)  __attribute__((weak));
+    void endRect()__attribute__((weak));
+    void *              fOptPtr;
+
     /** Given the byte size of the index buffer to be passed to the matrix proc,
         return the maximum number of resulting pixels that can be computed
         (i.e. the number of SkPMColor values to be written by the sample proc).
