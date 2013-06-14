@@ -18,7 +18,11 @@
 #if defined(FIMG2D_ENABLED)
 #include "SkBitmap.h"
 #include "SkBitmapProcShader.h"
+#if defined(FIMG2D3X)
+#include "SkFimgApi3x.h"
+#elif defined(FIMG2D4X)
 #include "SkFimgApi4x.h"
+#endif
 extern Fimg fimg;
 extern SkMutex gG2DMutex;
 #endif
@@ -228,7 +232,7 @@ void SkARGB32_Blitter::blitRect(int x, int y, int width, int height) {
     if (255 == SkGetPackedA32(color)) {
         fColorRect32Proc(device, width, height, rowBytes, color);
     } else {
-#if defined(FIMG2D_ENABLED)
+#if defined(FIMG2D_ENABLED) && defined (FIMG2D4X)
         gG2DMutex.acquire();
         int retFimg = FimgARGB32_Rect(fimg, fDevice.getAddr32(0, 0),
                                         x, y, width, height, rowBytes, color);
