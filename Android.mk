@@ -508,6 +508,16 @@ LOCAL_EXPORT_C_INCLUDES := \
 
 LOCAL_LDLIBS += -lpthread
 
+# for FIMG2D acceleration
+ifeq ($(BOARD_USES_FIMGAPI),true)
+ifeq ($(BOARD_USES_SKIA_FIMGAPI),true)
+LOCAL_CFLAGS += -DFIMG2D_ENABLED
+LOCAL_C_INCLUDES += $(TOP)/hardware/samsung/exynos4/hal/include
+LOCAL_SRC_FILES += src/core/SkFimgApi4x.cpp
+LOCAL_SHARED_LIBRARIES += libfimg
+endif
+endif
+
 LOCAL_MODULE:= libskia
 
 include $(BUILD_SHARED_LIBRARY)
