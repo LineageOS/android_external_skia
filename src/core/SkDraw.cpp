@@ -1364,10 +1364,17 @@ void SkDraw::drawBitmap(const SkBitmap& bitmap, const SkMatrix& prematrix,
 
         fimg.alpha = paint.getAlpha();
         if (bitmap.isOpaque() && (255 == fimg.alpha))
+#if defined(FIMG2D3X)
+            fimg.alpha = 256;
+#elif defined(FIMG2D4X)
             fimg.alpha = 255;
+#endif
         draw.drawRect_withG2D(r, install.paintWithShader());
 #else
         draw.drawRect(r, install.paintWithShader());
+#endif
+#if defined(FIMG2D_ENABLED)
+        fimg.srcAddr = NULL;
 #endif
     }
 }
