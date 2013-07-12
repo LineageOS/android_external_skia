@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (c) 2010, Code Aurora Forum. All rights reserved.
+ * Copyright (c) 2010, The Linux Foundation. All rights reserved.
  * Copyright 2006-2010, The Android Open Source Project
  *
  * Use of this source code is governed by a BSD-style license that can be
