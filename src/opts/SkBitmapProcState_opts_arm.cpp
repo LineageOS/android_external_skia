@@ -1266,15 +1266,6 @@ void SkBitmapProcState::platformProcs() {
             break;
         case SkBitmap::kRGB_565_Config:
 #if defined(__ARM_HAVE_NEON) && defined(SK_CPU_LENDIAN)
-            if (justDx && !doFilter) {
-                if (isOpaque) {
-                    fSampleProc32 = S16_opaque_D32_nofilter_DX_neon_asm;
-                }
-            }
-#endif
-            break;
-        case SkBitmap::kRGB_565_Config:
-#if defined(__ARM_HAVE_NEON) && defined(SK_CPU_LENDIAN)
             if (justDx && !doFilter && isOpaque) {
                 fSampleProc32 = S16_opaque_D32_nofilter_DX_arm;
                 fShaderProc32 = NULL;
