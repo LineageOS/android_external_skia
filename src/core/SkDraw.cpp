@@ -854,6 +854,11 @@ static SkPoint* rect_points(SkRect& r) {
     return (SkPoint*)(void*)&r;
 }
 
+static SkPoint* rect_points(SkRect& r, int index) {
+    SkASSERT((unsigned)index < 2);
+    return &((SkPoint*)(void*)&r)[index];
+}
+
 void SkDraw::drawRect(const SkRect& rect, const SkPaint& paint) const {
     SkDEBUGCODE(this->validate();)
 
