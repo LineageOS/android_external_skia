@@ -249,8 +249,8 @@ void SkARGB32_Blitter::blitRect(int x, int y, int width, int height) {
             fColor32Proc(device, device, width, color);
             device = (uint32_t*)((char*)device + rowBytes);
         }
-    }
 #endif
+    }
 }
 
 #if defined _WIN32 && _MSC_VER >= 1300
