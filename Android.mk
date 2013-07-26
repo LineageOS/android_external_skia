@@ -482,6 +482,7 @@ LOCAL_C_INCLUDES := \
 	$(LOCAL_PATH)/include/pipe \
 	$(LOCAL_PATH)/include/ports \
 	$(LOCAL_PATH)/include/utils \
+	$(LOCAL_PATH)/include/views \
 	$(LOCAL_PATH)/include/xml \
 	$(LOCAL_PATH)/src/core \
 	$(LOCAL_PATH)/src/gpu \
