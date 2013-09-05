@@ -42,7 +42,7 @@ class SkAltCanvas : public SkCanvas{
 
         virtual void reset();
 
-        void drawBitmapRect(const SkBitmap& bitmap, const SkIRect* src,
+        virtual void drawBitmapRectToRect(const SkBitmap& bitmap, const SkRect* src,
                             const SkRect& dst, const SkPaint* paint = NULL) __attribute__((weak));
 
         virtual int getNumBitmaps()     {   return mNumBitmaps;    }
