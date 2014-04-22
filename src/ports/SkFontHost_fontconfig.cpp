@@ -161,11 +161,6 @@ SkTypeface* SkFontHost::CreateTypefaceFromFile(const char path[]) {
     return stream.get() ? CreateTypefaceFromStream(stream) : NULL;
 }
 
-void SkFontHost::ClearCache() {
-    SkFontConfigInterface::SetGlobal(NULL);
-    SkFontConfigInterface::ClearSingletonInterface();
-}
-
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////

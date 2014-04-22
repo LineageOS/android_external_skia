@@ -11,7 +11,6 @@
 
 #include <expat.h>
 #include <sys/system_properties.h>
-#include <unistd.h>
 
 #define SYSTEM_FONTS_FILE "/system/etc/system_fonts.xml"
 #define FALLBACK_FONTS_FILE "/system/etc/fallback_fonts.xml"
@@ -256,29 +255,13 @@ static void getFallbackFontFamilies(SkTDArray<FontFamily*> &fallbackFonts) {
     }
 }
 
-static void getThemeFontFamilies(SkTDArray<FontFamily*> &fontFamilies) {
-    parseConfigFile(THEME_FONTS_FILE, fontFamilies);
-}
-
 /**
  * Loads data on font families from various expected configuration files. The
  * resulting data is returned in the given fontFamilies array.
  */
 void SkFontConfigParser::GetFontFamilies(SkTDArray<FontFamily*> &fontFamilies) {
 
-    //Determine if we want to use themes
-    bool use_theme_font = false;
-    if (access(THEME_FONTS_FILE, R_OK) == 0) {
-        use_theme_font = true;
-    }
-
-    if (use_theme_font) {
-        getThemeFontFamilies(fontFamilies);
-    }
-
-    if (!use_theme_font || fontFamilies.count() ==0) {
-        getSystemFontFamilies(fontFamilies);
-    }
+    getSystemFontFamilies(fontFamilies);
 
     // Append all the fallback fonts to system fonts
     SkTDArray<FontFamily*> fallbackFonts;

@@ -134,10 +134,6 @@ public:
      */
     static SkTypeface* Deserialize(SkStream*);
 
-    /** Use for reloading default fonts.
-    */
-    static void ClearCache();
-
     /** Retrieve detailed typeface metrics.  Used by the PDF backend.
         @param perGlyphInfo Indicate what glyph specific information (advances,
                             names, etc.) should be populated.

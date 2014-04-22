@@ -35,14 +35,13 @@ SkTypeface::~SkTypeface() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-SK_DECLARE_STATIC_MUTEX(gMutex);
-static const uint32_t FONT_STYLE_COUNT = 4;
-static SkTypeface* gDefaultTypefaces[FONT_STYLE_COUNT];
+
 SkTypeface* SkTypeface::GetDefaultTypeface(Style style) {
-    SkAutoMutexAcquire am(gMutex);
     // we keep a reference to this guy for all time, since if we return its
     // fontID, the font cache may later on ask to resolve that back into a
     // typeface object.
+    static const uint32_t FONT_STYLE_COUNT = 4;
+    static SkTypeface* gDefaultTypefaces[FONT_STYLE_COUNT];
     SkASSERT((unsigned)style < FONT_STYLE_COUNT);
 
     // mask off any other bits to avoid a crash in SK_RELEASE
@@ -53,17 +52,6 @@ SkTypeface* SkTypeface::GetDefaultTypeface(Style style) {
         SkFontHost::CreateTypeface(NULL, NULL, style);
     }
     return gDefaultTypefaces[style];
-}
-
-void SkTypeface::ClearCache() {
-    SkAutoMutexAcquire am(gMutex);
-    SkFontHost::ClearCache();
-    for(unsigned int i=0; i < FONT_STYLE_COUNT; i++) {
-       if (gDefaultTypefaces[i] != NULL) {
-           gDefaultTypefaces[i]->unref();
-           gDefaultTypefaces[i] = NULL;
-       }
-   }
 }
 
 SkTypeface* SkTypeface::RefDefault(Style style) {

@@ -80,7 +80,7 @@ private:
     void add(SkTypeface*, SkTypeface::Style requested, bool strong = true);
     SkTypeface* findByID(SkFontID findID) const;
     SkTypeface* findByProcAndRef(FindProc proc, void* ctx) const;
-    void purge(int count, bool force);
+    void purge(int count);
     void purgeAll();
 
     struct Rec {

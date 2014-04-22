@@ -14,8 +14,6 @@
 #include "SkString.h"
 #include "SkTDArray.h"
 
-#define THEME_FONTS_FILE "/data/system/theme/fonts/fonts.xml"
-
 struct FontFileInfo {
     FontFileInfo() : fFileName(NULL) {}
 

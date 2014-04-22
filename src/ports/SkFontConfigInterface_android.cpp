@@ -6,10 +6,9 @@
  * found in the LICENSE file.
  */
 
-#include <sys/system_properties.h>
 #include "SkFontConfigInterface.h"
 #include "SkTypeface_android.h"
-#include "SkTypefaceCache.h"
+
 #include "SkFontConfigParser_android.h"
 #include "SkFontConfigTypeface.h"
 #include "SkFontMgr.h"
@@ -25,9 +24,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-
-#define THEME_PATH "/data/system/theme/fonts/"
 
 #ifndef SK_DEBUG_FONTS
     #define SK_DEBUG_FONTS 0
@@ -110,7 +106,6 @@ public:
     SkTypeface* getTypefaceForGlyphID(uint16_t glyphID, const SkTypeface* origTypeface,
                                       const SkPaintOptionsAndroid& options,
                                       int* lowerBounds, int* upperBounds);
-    void clearSingletonInterface();
 
 private:
     void addFallbackFamily(FamilyRecID fontRecID);
@@ -134,10 +129,11 @@ private:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-SK_DECLARE_STATIC_MUTEX(gMutex); //This is the interface for gFontConfigInterface
-static SkFontConfigInterfaceAndroid* gFontConfigInterface;
 
 static SkFontConfigInterfaceAndroid* getSingletonInterface() {
+    SK_DECLARE_STATIC_MUTEX(gMutex);
+    static SkFontConfigInterfaceAndroid* gFontConfigInterface;
+
     SkAutoMutexAcquire ac(gMutex);
     if (NULL == gFontConfigInterface) {
         // load info from a configuration file that we can use to populate the
@@ -162,14 +158,6 @@ SkFontConfigInterface* SkFontConfigInterface::GetSingletonDirectInterface() {
     return getSingletonInterface();
 }
 
-void SkFontConfigInterface::ClearSingletonInterface() {
-     SkAutoMutexAcquire ac(gMutex);
-     SkTypefaceCache::PurgeAll();
-     if (NULL != gFontConfigInterface) {
-         delete gFontConfigInterface;
-         gFontConfigInterface = NULL;
-     }
-}
 ///////////////////////////////////////////////////////////////////////////////
 
 static bool has_font(const SkTArray<FontRec>& array, const SkString& filename) {
@@ -192,11 +180,6 @@ static void get_path_for_sys_fonts(SkString* full, const char name[]) {
         full->set(getenv("ANDROID_ROOT"));
         full->append(SK_FONT_FILE_PREFIX);
     }
-    full->append(name);
-}
-
-static void get_path_for_themed_fonts(SkString* full, const char name[]) {
-    full->set(THEME_PATH);
     full->append(name);
 }
 
@@ -234,21 +217,9 @@ SkFontConfigInterfaceAndroid::SkFontConfigInterfaceAndroid(SkTDArray<FontFamily*
         FamilyRec* familyRec = NULL;
         FamilyRecID familyRecID = INVALID_FAMILY_REC_ID;
 
-        // Determine whether to use theme fonts
-        bool use_theme_font = false;
-        if (access(THEME_FONTS_FILE, R_OK) == 0) {
-            use_theme_font = true;
-        }
-
         for (int j = 0; j < family->fFontFiles.count(); ++j) {
             SkString filename;
-            char useSystemFontProp[PROP_VALUE_MAX];
-
-            if (use_theme_font && !family->fIsFallbackFont) {
-               get_path_for_themed_fonts(&filename, family->fFontFiles[j]->fFileName);
-            } else {
-               get_path_for_sys_fonts(&filename, family->fFontFiles[j]->fFileName);
-            }
+            get_path_for_sys_fonts(&filename, family->fFontFiles[j]->fFileName);
 
             if (has_font(fFonts, filename)) {
                 SkDebugf("---- system font and fallback font files specify a duplicate "
