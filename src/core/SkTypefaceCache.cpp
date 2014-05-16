@@ -86,8 +86,8 @@ void SkTypefaceCache::purge(int numToPurge, bool force) {
     }
 }
 
-void SkTypefaceCache::purgeAll() {
-    this->purge(fArray.count(), true);
+void SkTypefaceCache::purgeAll(bool force) {
+    this->purge(fArray.count(), force);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -123,8 +123,12 @@ SkTypeface* SkTypefaceCache::FindByProcAndRef(FindProc proc, void* ctx) {
 }
 
 void SkTypefaceCache::PurgeAll() {
+    SkTypefaceCache::PurgeAll(false);
+}
+
+void SkTypefaceCache::PurgeAll(bool force) {
     SkAutoMutexAcquire ama(gMutex);
-    Get().purgeAll();
+    Get().purgeAll(force);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
