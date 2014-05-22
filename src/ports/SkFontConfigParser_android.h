@@ -32,11 +32,12 @@ struct FontFileInfo {
  * they are read from the configuration files.
  */
 struct FontFamily {
-    FontFamily() : fIsFallbackFont(false), order(-1) {}
+    FontFamily() : fIsFallbackFont(false), fIsFallbackMonospaceFont(false), order(-1) {}
 
     SkTDArray<const char*>   fNames;
     SkTDArray<FontFileInfo*> fFontFiles;
     bool fIsFallbackFont;
+    bool fIsFallbackMonospaceFont;
     int order; // only used internally by SkFontConfigParser
 };
 
