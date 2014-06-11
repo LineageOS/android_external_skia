@@ -182,6 +182,11 @@ public:
         return SkAlphaTypeIsOpaque(this->alphaType());
     }
 
+    /** Specify if this bitmap's pixels are all opaque or not. Is only meaningful for configs
+        that support per-pixel alpha (RGB32, A1, A8).
+    */
+    void setIsOpaque(bool);
+
     /** Returns true if the bitmap is volatile (i.e. should not be cached by devices.)
     */
     bool isVolatile() const;

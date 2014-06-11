@@ -344,6 +344,11 @@ bool SkBitmap::setAlphaType(SkAlphaType alphaType) {
     return true;
 }
 
+// Samsung libtvout compat
+void SkBitmap::setIsOpaque(bool isOpaque) {
+    this->setAlphaType(isOpaque ? kOpaque_SkAlphaType : kPremul_SkAlphaType);
+}
+
 void SkBitmap::updatePixelsFromRef() const {
     if (NULL != fPixelRef) {
         if (fPixelLockCount > 0) {
