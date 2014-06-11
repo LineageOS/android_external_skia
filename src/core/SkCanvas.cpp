@@ -504,6 +504,18 @@ SkBaseDevice* SkCanvas::init(SkBaseDevice* device) {
     return this->setDevice(device);
 }
 
+extern "C" void* _ZN8SkCanvas4initEP12SkBaseDevice(void *canvas, void *device);
+
+extern "C" void* _ZN8SkCanvas4initEP8SkDevice(void *canvas, void* device) {
+    return _ZN8SkCanvas4initEP12SkBaseDevice(canvas, device);
+}
+
+extern "C" void* _ZN8SkCanvasC1EP12SkBaseDevice(void *canvas, void *device);
+
+extern "C" void* _ZN8SkCanvasC1EP8SkDevice(void *canvas, void* device) {
+    return _ZN8SkCanvasC1EP12SkBaseDevice(canvas, device);
+}
+
 SkCanvas::SkCanvas()
 : fMCStack(sizeof(MCRec), fMCRecStorage, sizeof(fMCRecStorage)) {
     inc_canvas();
