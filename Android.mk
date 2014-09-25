@@ -518,7 +518,7 @@ ifeq ($(TARGET_ARCH),arm)
 ifeq ($(ARCH_ARM_HAVE_NEON),true)
 
 LOCAL_CFLAGS += -DNEON_BLIT_ANTI_H
-ifneq ($(TARGET_HAVE_QC_PERF),true)
+ifneq ($(TARGET_HAVE_QC_PERF_SKIA),true)
     LOCAL_CFLAGS += -DNEON_BLIT_H
 endif
 
