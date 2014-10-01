@@ -518,7 +518,7 @@ ifeq ($(TARGET_ARCH),arm)
 ifeq ($(ARCH_ARM_HAVE_NEON),true)
 
 LOCAL_CFLAGS += -DNEON_BLIT_ANTI_H
-ifneq ($(WITH_QC_PERF),true)
+ifneq ($(TARGET_HAVE_QC_PERF),true)
     LOCAL_CFLAGS += -DNEON_BLIT_H
 endif
 
@@ -575,7 +575,7 @@ LOCAL_STATIC_LIBRARIES := \
 	libwebp-encode
 
 ifeq ($(call is-vendor-board-platform,QCOM),true)
-ifeq ($(WITH_QC_PERF),true)
+ifeq ($(TARGET_HAVE_QC_PERF),true)
 	LOCAL_WHOLE_STATIC_LIBRARIES += libqc-skia
 endif
 endif

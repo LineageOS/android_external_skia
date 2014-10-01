@@ -139,7 +139,7 @@ start:
 
 extern "C" {
     inline void memcpy_paint_opt(int* src, int* dst) {
-
+#ifdef ARCH_ARM
     __asm__ volatile
    (
         "cpy            r4, %1 \n\t"
@@ -156,6 +156,10 @@ extern "C" {
         : "r" (src), "r" (dst)
         : "r4","r5","ip","d0","q0","q1","d3"
         );
+#else
+    // just use the non-optimized copy
+    memcpy(src, dst, SIZE_OF_PAINT);
+#endif /* ARCH_ARM */
     }
 }
 
