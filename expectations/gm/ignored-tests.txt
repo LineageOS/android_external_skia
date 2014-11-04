@@ -76,3 +76,8 @@ xfermodeimagefilter
 
 # Added by sugoi in https://codereview.chromium.org/101623007
 displacement
+
+# Added by kevin.petit.arm@gmail.com for https://codereview.chromium.org/23835006/
+# Will need rebaselining
+scaled_tilemodes_npot
+giantbitmap_repeat_bilerp_scale
