@@ -249,7 +249,13 @@ static void D32_A8_Opaque(void* SK_RESTRICT dst, size_t dstRB,
 #endif
 }
 
-static void D32_A8_Black(void* SK_RESTRICT dst, size_t dstRB,
+#if !SK_ARM_NEON_IS_NONE
+extern "C" void D32_A8_Black_Neon(void* SK_RESTRICT dst, size_t dstRB,
+                         const void* SK_RESTRICT maskPtr, size_t maskRB,
+                         SkColor, int width, int height);
+#endif
+
+/*static */void D32_A8_Black(void* SK_RESTRICT dst, size_t dstRB,
                          const void* SK_RESTRICT maskPtr, size_t maskRB,
                          SkColor, int width, int height) {
     SkPMColor* SK_RESTRICT device = (SkPMColor*)dst;
@@ -576,7 +582,11 @@ static void D32_LCD32_Opaque(void* SK_RESTRICT dst, size_t dstRB,
 
 static SkBlitMask::ColorProc D32_A8_Factory(SkColor color) {
     if (SK_ColorBLACK == color) {
+#if !SK_ARM_NEON_IS_NONE
+        return D32_A8_Black_Neon;
+#else
         return D32_A8_Black;
+#endif
     } else if (0xFF == SkColorGetA(color)) {
         return D32_A8_Opaque;
     } else {
