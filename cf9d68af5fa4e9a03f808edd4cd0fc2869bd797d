@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7aa08908_4c477b1d",
+        "filename": "src/opts/SkBitmapProcState_opts_arm.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 10984
+      },
+      "writtenOn": "2015-01-08T06:42:11Z",
+      "side": 1,
+      "message": "clamp_clamp is only going to be used in the switch, if defined(__ARM_HAVE_NEON) \u0026\u0026 defined(SK_CPU_LENDIAN), so the creation of this bool should also be ifdef\u0027d, as well as SkShader\u0027s inclusion.",
+      "revId": "cf9d68af5fa4e9a03f808edd4cd0fc2869bd797d",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
