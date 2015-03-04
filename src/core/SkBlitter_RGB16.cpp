@@ -16,6 +16,15 @@
 #include "SkUtilsArm.h"
 #include "SkXfermode.h"
 
+#if defined(FIMG2D_ENABLED)
+#define FORCE_CPU_WIDTH (100)
+#define FORCE_CPU_HEIGHT (100)
+#include "SkBitmap.h"
+#include "SkBitmapProcShader.h"
+#include "SkFimgApi4x.h"
+extern Fimg fimg;
+#endif
+
 #if SK_ARM_NEON_IS_ALWAYS && defined(SK_CPU_LENDIAN)
     #include <arm_neon.h>
 #else
@@ -683,10 +692,29 @@ void SkRGB16_Blitter::blitRect(int x, int y, int width, int height) {
     size_t    deviceRB = fDevice.rowBytes();
     SkPMColor src32 = fSrcColor32;
 
+#if defined(FIMG2D_ENABLED)
+    //SkDebugf("%s FIMG2D_ENABLED", __func__);
+
+    int retFimg = 0;
+
+    if (width > FORCE_CPU_WIDTH && height > FORCE_CPU_HEIGHT) {
+        FimgRGB16_Rect(fimg, fDevice.getAddr16(0, 0), x, y, width, height, deviceRB, src32);
+    } else {
+        retFimg = 0;
+    }
+
+    if (retFimg != FIMGAPI_FINISHED) {
+        while (--height >= 0) {
+            blend32_16_row(src32, device, width);
+            device = (uint16_t*)((char*)device + deviceRB);
+        }
+    }
+#else
     while (--height >= 0) {
         blend32_16_row(src32, device, width);
         device = (uint16_t*)((char*)device + deviceRB);
     }
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
