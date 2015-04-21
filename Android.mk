@@ -37,12 +37,14 @@ include $(CLEAR_VARS)
 LOCAL_FDO_SUPPORT := true
 
 LOCAL_ARM_MODE := thumb
+ifneq ($(TARGET_ARCH_LOWMEM),true)
 ifeq ($(TARGET_ARCH),arm)
 	ifeq ($(ARCH_ARM_HAVE_VFP),true)
 		LOCAL_CFLAGS += -DANDROID_LARGE_MEMORY_DEVICE
 	endif
 else
 	LOCAL_CFLAGS += -DANDROID_LARGE_MEMORY_DEVICE
+endif
 endif
 
 # used for testing
