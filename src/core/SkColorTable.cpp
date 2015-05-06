@@ -73,12 +73,30 @@ static inline void build_16bitcache(uint16_t dst[], const SkPMColor src[],
 }
 
 const uint16_t* SkColorTable::lock16BitCache() {
-    if (this->isOpaque() && NULL == f16BitCache) {
+    if (f16BitCache == NULL) {
+        if (this->isOpaque() == 0) {
+            /*
+             * It seems to be necessary to always create the f16BitCache,
+             * even if this Color table isn't Opaque.
+             *
+             * It's currently assumed by RETURNDST() macro in src/core/SkBitmapProcState_procs.h
+             * that table is set:
+             *    RETURNDST(src):          table[src]
+             * and table is set by this function:
+             *     PREAMBLE(state):
+             *        const uint16_t* SK_RESTRICT table = state.fBitmap->getColorTable()->lock16BitCache()
+             *
+             * f16BitCache appears to always be made free so this just makes SKIA rocksolid with
+             * a slight increase in mamory allocation and cpu time.
+             */
+             SkDebugf("%s: this:%p->isOpaque() is False; creating f16BitCache anyway\n", __func__, this);
+        }
         f16BitCache = (uint16_t*)sk_malloc_throw(fCount * sizeof(uint16_t));
+        SkASSERT(f16BitCache != NULL);
         build_16bitcache(f16BitCache, fColors, fCount);
     }
-
     SkDEBUGCODE(f16BitCacheLockCount += 1);
+    SkASSERT(f16BitCache != NULL);
     return f16BitCache;
 }
 
