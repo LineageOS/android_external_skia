@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a89bdaa_ce09cbdf",
+        "filename": "Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 10094
+      },
+      "writtenOn": "2015-05-07T13:00:15Z",
+      "side": 1,
+      "message": "It\u0027s not necessary to disable qcom optimzations, right?",
+      "revId": "df66ad2662019606fc872c7d5fd1787957fe5bec",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
