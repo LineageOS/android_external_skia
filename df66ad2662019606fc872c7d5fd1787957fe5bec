@@ -16,6 +16,24 @@
       "revId": "df66ad2662019606fc872c7d5fd1787957fe5bec",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a89bdaa_4e1dbb0e",
+        "filename": "Android.mk",
+        "patchSetId": 2
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 13256
+      },
+      "writtenOn": "2015-05-07T13:20:43Z",
+      "side": 1,
+      "message": "Ill try it.\nHow does this change get to the stable branch.\nDo we build a skia blob from src and override the QC blob?",
+      "parentUuid": "9a89bdaa_ce09cbdf",
+      "revId": "df66ad2662019606fc872c7d5fd1787957fe5bec",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
