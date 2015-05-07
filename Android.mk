@@ -531,10 +531,14 @@ LOCAL_STATIC_LIBRARIES := \
 	libwebp-encode \
 	libgif \
 	libsfntly
-
-ifeq ($(TARGET_HAVE_QC_PERF),true)
-	LOCAL_WHOLE_STATIC_LIBRARIES += libqc-skia
-endif
+#
+# Disable QC Skia Performace library until QC integrates:
+#
+#	Change-Id: Idefdc04f2c0109d634bd8fc3a578f425528cc301
+#
+# ifeq ($(TARGET_HAVE_QC_PERF),true)
+#	LOCAL_WHOLE_STATIC_LIBRARIES += libqc-skia
+# endif
 
 
 LOCAL_C_INCLUDES := \
