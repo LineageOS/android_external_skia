@@ -22,6 +22,30 @@
       "revId": "b0379d9ec708c3a96d4f439029ab41761223abd0",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a89bdaa_99a70b4f",
+        "filename": "src/images/SkImageDecoder_wbmp.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 13108
+      },
+      "writtenOn": "2015-05-13T13:10:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a89bdaa_5910234f",
+      "range": {
+        "startLine": 122,
+        "startChar": 60,
+        "endLine": 122,
+        "endChar": 79
+      },
+      "revId": "b0379d9ec708c3a96d4f439029ab41761223abd0",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
