@@ -5,6 +5,7 @@
  * found in the LICENSE file.
  */
 
+#include <sys/system_properties.h>
 #include "SkImageDecoder.h"
 #include "SkImageEncoder.h"
 #include "SkColor.h"
@@ -1225,6 +1226,20 @@ bool SkPNGImageEncoder::doEncode(SkWStream* stream, const SkBitmap& bitmap,
         png_set_PLTE(png_ptr, info_ptr, paletteColors, ct->count());
         if (numTrans > 0) {
             png_set_tRNS(png_ptr, info_ptr, trans, numTrans, NULL);
+        }
+    }
+
+    // Write out information about how this was generated
+    {
+        png_text comment;
+        char prop[PROP_VALUE_MAX];
+        __system_property_get("ro.modversion", prop);
+        if (prop[0] != '\0') {
+            comment.compression = PNG_TEXT_COMPRESSION_NONE;
+            comment.key = (png_charp)"Software";
+            comment.text = prop;
+            comment.text_length = strlen(comment.text);
+            png_set_text(png_ptr, info_ptr, &comment, 1);
         }
     }
 
