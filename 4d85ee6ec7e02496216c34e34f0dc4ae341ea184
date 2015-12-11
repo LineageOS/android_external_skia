@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f93b717_b2c8a674",
+        "filename": "src/opts/SkBitmapProcState_opts_arm.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 3917
+      },
+      "writtenOn": "2015-12-11T05:22:17Z",
+      "side": 1,
+      "message": "Are we sure this doesn\u0027t overwrite the previously select C implementation and thus lead downstream code to blow up?\n\nIsn\u0027t fSampleProc32 is first initialized (i guess with C code) and then it calls platform procs",
+      "revId": "4d85ee6ec7e02496216c34e34f0dc4ae341ea184",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
