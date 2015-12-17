@@ -608,7 +608,7 @@ LOCAL_STATIC_LIBRARIES := \
 
 ifeq ($(TARGET_HAVE_QC_PERF),true)
     LOCAL_WHOLE_STATIC_LIBRARIES += libqc-skia
-    ifeq ($(call is-board-platform-in-list,msm8974 msm8994),true)
+    ifeq ($(call is-board-platform-in-list,msm8974 msm8994 msm8996),true)
         LOCAL_SHARED_LIBRARIES += libqc-opt
     endif
 endif
