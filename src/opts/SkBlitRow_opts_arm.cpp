@@ -7,6 +7,7 @@
 
 #include "SkBlitRow.h"
 #include "SkUtilsArm.h"
+
 #include "SkBlitRow_opts_arm_neon.h"
 
 static const SkBlitRow::Proc sk_blitrow_platform_565_procs_arm[] = {
@@ -16,9 +17,6 @@ static const SkBlitRow::Proc sk_blitrow_platform_565_procs_arm[] = {
 static const SkBlitRow::Proc32 sk_blitrow_platform_32_procs_arm[] = {
     NULL, NULL, NULL, NULL,
 };
-
-extern SkBlitRow::Proc32 skia_androidopt_PlatformProcs32(unsigned flags) __attribute__((weak));
-extern SkBlitRow::Proc skia_androidopt_PlatformProcs565(unsigned flags) __attribute__((weak));
 
 SkBlitRow::Proc SkBlitRow::PlatformProcs565(unsigned flags) {
     if (skia_androidopt_PlatformProcs565 && skia_androidopt_PlatformProcs565(flags) ) {
