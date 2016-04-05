@@ -7,6 +7,7 @@
 
 #include "SkBlitRow.h"
 #include "SkUtilsArm.h"
+
 #include "SkBlitRow_opts_arm_neon.h"
 
 static const SkBlitRow::Proc sk_blitrow_platform_565_procs_arm[] = {
