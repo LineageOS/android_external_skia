@@ -608,7 +608,7 @@ LOCAL_STATIC_LIBRARIES := \
 
 ifeq ($(TARGET_HAVE_QC_PERF),true)
     LOCAL_WHOLE_STATIC_LIBRARIES += libqc-skia
-    ifeq ($(call is-board-platform-in-list,msm8974 msm8994 msm8996),true)
+    ifeq ($(call is-board-platform-in-list,msm8974 msm8992 msm8994 msm8996),true)
         LOCAL_SHARED_LIBRARIES += libqc-opt
     endif
 endif
@@ -776,7 +776,7 @@ include $(BUILD_SHARED_LIBRARY)
 #
 
 # benchmark (timings)
-include $(BASE_PATH)/bench/Android.mk
+#include $(BASE_PATH)/bench/Android.mk
 
 # diamond-master (one test to rule them all)
-include $(BASE_PATH)/dm/Android.mk
+#include $(BASE_PATH)/dm/Android.mk
