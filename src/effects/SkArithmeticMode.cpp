@@ -18,6 +18,8 @@
 #include "SkImageFilterUtils.h"
 #endif
 
+#include <algorithm>
+
 static const bool gUseUnpremul = false;
 
 class SkArithmeticMode_scalar : public SkXfermode {
@@ -60,12 +62,7 @@ private:
 };
 
 static int pinToByte(int value) {
-    if (value < 0) {
-        value = 0;
-    } else if (value > 255) {
-        value = 255;
-    }
-    return value;
+    return std::max(0, std::min(255, value));
 }
 
 static int arith(SkScalar k1, SkScalar k2, SkScalar k3, SkScalar k4,
