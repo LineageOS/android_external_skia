@@ -757,6 +757,12 @@ LOCAL_SRC_FILES_arm += \
 	src/opts/SkBlitRow_opts_arm_neon.cpp \
 	src/opts/SkOpts_neon.cpp
 
+ifeq ($(BOARD_USES_NEON_BLITANTIH),true)
+LOCAL_CFLAGS += -DNEON_BLIT
+LOCAL_SRC_FILES += \
+	src/core/asm/SkBlitter_RGB16_NEON.S
+endif
+
 LOCAL_CFLAGS_arm += \
 	-DSK_ARM_HAS_NEON
 
