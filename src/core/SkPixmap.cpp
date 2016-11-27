@@ -117,6 +117,41 @@ static uint16_t pack_8888_to_4444(unsigned a, unsigned r, unsigned g, unsigned b
     return SkToU16(pixel);
 }
 
+#if 1
+/**
+ * From SkBitmap.cpp
+ */
+void* SkPixmap::getAddr(int x, int y) const {
+    SkASSERT((unsigned)x < (unsigned)this->width());
+    SkASSERT((unsigned)y < (unsigned)this->height());
+
+    char* base = (char*)this->getPixels();
+    if (base) {
+        base += y * this->rowBytes();
+        switch (this->colorType()) {
+            case kRGBA_8888_SkColorType:
+            case kBGRA_8888_SkColorType:
+                base += x << 2;
+                break;
+            case kARGB_4444_SkColorType:
+            case kRGB_565_SkColorType:
+                base += x << 1;
+                break;
+            case kAlpha_8_SkColorType:
+            case kIndex_8_SkColorType:
+            case kGray_8_SkColorType:
+                base += x;
+                break;
+            default:
+                SkDEBUGFAIL("Can't return addr for config");
+                base = nullptr;
+                break;
+        }
+    }
+    return base;
+}
+#endif
+
 bool SkPixmap::erase(SkColor color, const SkIRect& inArea) const {
     if (nullptr == fPixels) {
         return false;

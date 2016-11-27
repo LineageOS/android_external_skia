@@ -426,6 +426,10 @@ LOCAL_SHARED_LIBRARIES := \
 	libEGL \
 	libz
 
+ifeq ($(BOARD_USES_SKIA_FIMGAPI),true)
+    LOCAL_SHARED_LIBRARIES += libfimg
+endif
+
 LOCAL_STATIC_LIBRARIES := \
 	libskia_static \
 	libjsoncpp
