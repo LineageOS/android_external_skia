@@ -14,6 +14,14 @@
 #include "SkUtilsArm.h"
 #include "SkXfermode.h"
 
+#if defined(FIMG2D_ENABLED)
+#define FORCE_CPU_WIDTH (100)
+#define FORCE_CPU_HEIGHT (100)
+#include "SkBitmap.h"
+#include "SkBitmapProcShader.h"
+#include "SkFimgApi4x.h"
+#endif
+
 #if defined(__mips_dsp)
 extern void blitmask_d565_opaque_mips(int width, int height, uint16_t* device,
                                       unsigned deviceRB, const uint8_t* alpha,
@@ -30,6 +38,40 @@ extern void SkRGB16BlitterBlitV_neon(uint16_t* device,
 #else
     // if we don't have neon, then our black blitter is worth the extra code
     #define USE_BLACK_BLITTER
+#endif
+
+#ifdef NEON_BLIT
+extern "C" void blitH_NEON(uint16_t *dst, int count, uint32_t src_expand, unsigned int scale);
+extern "C" void blitAntiH_NEON(const SkAlpha* SK_RESTRICT antialias,
+                               uint16_t * SK_RESTRICT device,
+                               const int16_t* SK_RESTRICT runs,
+                               uint32_t srcExpanded, unsigned scale);
+#endif
+
+#if defined(FIMG2D_ENABLED)
+/*
+ * Legacy methods (removed in upstream)
+ */
+static uint32_t pmcolor_to_expand16_L(SkPMColor c) {
+    unsigned r = SkGetPackedR32(c);
+    unsigned g = SkGetPackedG32(c);
+    unsigned b = SkGetPackedB32(c);
+    return (g << 24) | (r << 13) | (b << 2);
+}
+static inline void blend32_16_row_L(SkPMColor src, uint16_t dst[], int count) {
+    SkASSERT(count > 0);
+    uint32_t src_expand = pmcolor_to_expand16_L(src);
+    unsigned scale = SkAlpha255To256(0xFF - SkGetPackedA32(src)) >> 3;
+#ifdef NEON_BLIT
+    blitH_NEON(dst, count, src_expand, scale);
+#else
+    do {
+        uint32_t dst_expand = SkExpand_rgb_16(*dst) * scale;
+        *dst = SkCompact_rgb_16((src_expand + dst_expand) >> 5);
+        dst += 1;
+    } while (--count != 0);
+#endif
+}
 #endif
 
 void sk_dither_memset16(uint16_t dst[], uint16_t value, uint16_t other,
@@ -503,10 +545,26 @@ void SkRGB16_Opaque_Blitter::blitRect(int x, int y, int width, int height) {
             device = (uint16_t*)((char*)device + deviceRB);
         }
     } else {  // no dither
+#if defined(FIMG2D_ENABLED)
+        SkPMColor src32 = fSrcColor32;
+        int retFimg = 0;
+        if (width > FORCE_CPU_WIDTH && height > FORCE_CPU_HEIGHT)
+            retFimg = FimgRGB16_Rect(fDevice.addr32(0,0), x, y, width, height, deviceRB, src32);
+        else
+            retFimg = 0;
+
+        if (retFimg != FIMGAPI_FINISHED) {
+            while (--height >= 0) {
+                blend32_16_row_L(src32, device, width);
+                device = (uint16_t*)((char*)device + deviceRB);
+            }
+        }
+ #else
         while (--height >= 0) {
             sk_memset16(device, color16, width);
             device = (uint16_t*)((char*)device + deviceRB);
         }
+#endif
     }
 }
 
