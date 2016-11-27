@@ -762,6 +762,12 @@ LOCAL_CFLAGS_arm += \
 
 endif
 
+ifeq ($(BOARD_USES_NEON_BLITANTIH),true)
+LOCAL_CFLAGS += -DNEON_BLIT
+LOCAL_SRC_FILES += \
+	src/core/asm/SkBlitter_RGB16_NEON.S
+endif
+
 LOCAL_CFLAGS_x86 += \
 	-msse2 \
 	-mfpmath=sse
