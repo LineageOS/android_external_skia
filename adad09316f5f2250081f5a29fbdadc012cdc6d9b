@@ -2,6 +2,138 @@
   "comments": [
     {
       "key": {
+        "uuid": "5f681702_e3aa70d0",
+        "filename": "Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 773,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "nitpick, but it seems like the convention in this file is tabs, not spaces for indentation",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_23bc6804",
+        "filename": "Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "TARGET_SLSI_VARIANT ? We only have cm right now, so this is probably fine anyway.",
+      "range": {
+        "startLine": 775,
+        "startChar": 57,
+        "endLine": 775,
+        "endChar": 59
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_43bfe4fa",
+        "filename": "include/core/SkFimgApi4x.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "two space? o__0",
+      "range": {
+        "startLine": 59,
+        "startChar": 43,
+        "endLine": 59,
+        "endChar": 45
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_a3d07852",
+        "filename": "include/core/SkFimgV4L2.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "If it\u0027s possible to use things like uint8_t for pointer/address types, that would be better.",
+      "range": {
+        "startLine": 79,
+        "startChar": 4,
+        "endLine": 79,
+        "endChar": 17
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_e3c1d082",
+        "filename": "include/core/SkFimgV4L2.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "Can we make this a fixed width type also? What\u0027s the range here?",
+      "range": {
+        "startLine": 106,
+        "startChar": 4,
+        "endLine": 106,
+        "endChar": 17
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_03c5ec8e",
+        "filename": "include/core/SkFimgV4L2.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "uint32_t, or uint8_t if the expected range is 0-255?",
+      "range": {
+        "startLine": 108,
+        "startChar": 4,
+        "endLine": 108,
+        "endChar": 16
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f681702_e35ef143",
         "filename": "include/core/SkPixmap.h",
         "patchSetId": 1
@@ -36,6 +168,46 @@
     },
     {
       "key": {
+        "uuid": "5f681702_63d66052",
+        "filename": "src/core/SkDraw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 927,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "line length",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_c3cbf4a2",
+        "filename": "src/core/SkDraw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 948,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "unsigned char * cast? :/",
+      "range": {
+        "startLine": 948,
+        "startChar": 39,
+        "endLine": 948,
+        "endChar": 56
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f681702_03568d2a",
         "filename": "src/core/SkDraw.cpp",
         "patchSetId": 1
@@ -53,6 +225,80 @@
     },
     {
       "key": {
+        "uuid": "5f681702_83e8dc16",
+        "filename": "src/core/SkDraw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 1452,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "Can\u0027t bring this into the FIMG2D_ENABLED block below?",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_c3f2d406",
+        "filename": "src/core/SkFimgApi4x.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "Casting like this worries me when it comes to 64-bit, although fimg4 devices are all 32-bit anyway.",
+      "range": {
+        "startLine": 287,
+        "startChar": 30,
+        "endLine": 287,
+        "endChar": 45
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_a3f7d8f5",
+        "filename": "src/core/SkFimgV4L2.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "line length",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_e3d8b080",
+        "filename": "src/core/SkFimgV4L2.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "line length",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f681702_c35bf551",
         "filename": "src/core/SkPixmap.cpp",
         "patchSetId": 1
@@ -64,6 +310,23 @@
       "writtenOn": "2016-11-27T21:00:48Z",
       "side": 1,
       "message": "TODO:\n* Check if we can use other interfaces here.\n* Use the correct macro barrier",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_23e3c835",
+        "filename": "src/core/SkPixmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-11-27T21:55:40Z",
+      "side": 1,
+      "message": "Asserts in live codepaths are worrying.",
       "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
