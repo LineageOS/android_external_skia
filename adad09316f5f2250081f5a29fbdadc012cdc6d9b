@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5f681702_e35ef143",
+        "filename": "include/core/SkPixmap.h",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 7155
+      },
+      "writtenOn": "2016-11-27T21:00:48Z",
+      "side": 1,
+      "message": "TODO:\n* Check if we can use other interfaces here.\n* Use the correct macro barrier",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_2359095a",
+        "filename": "src/core/SkBlitter_RGB16.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7155
+      },
+      "writtenOn": "2016-11-27T21:00:48Z",
+      "side": 1,
+      "message": "TODO:\n* Check if there is an existing method for pmcolor_to_expand16_L\n* Check if there is an existing method for blend32_16_row_L",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_03568d2a",
+        "filename": "src/core/SkDraw.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 964,
+      "author": {
+        "id": 7155
+      },
+      "writtenOn": "2016-11-27T21:00:48Z",
+      "side": 1,
+      "message": "TODO:\n* Check if we need to lock the target SkPixmap ref",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f681702_c35bf551",
+        "filename": "src/core/SkPixmap.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 7155
+      },
+      "writtenOn": "2016-11-27T21:00:48Z",
+      "side": 1,
+      "message": "TODO:\n* Check if we can use other interfaces here.\n* Use the correct macro barrier",
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
