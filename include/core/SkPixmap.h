@@ -69,6 +69,15 @@ public:
     SkAlphaType alphaType() const { return fInfo.alphaType(); }
     bool isOpaque() const { return fInfo.isOpaque(); }
 
+#if 1
+    /**
+     *  From SkBitmap.h
+     */
+    int bytesPerPixel() const { return fInfo.bytesPerPixel(); }
+    void* getAddr(int x, int y) const;
+    void* getPixels() const { return const_cast<void*>(fPixels); }
+#endif
+
     SkIRect bounds() const { return SkIRect::MakeWH(this->width(), this->height()); }
 
     uint64_t getSize64() const { return sk_64_mul(fInfo.height(), fRowBytes); }
