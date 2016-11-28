@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "5f681702_b708b228",
+        "filename": "Android.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 775,
+      "author": {
+        "id": 11604
+      },
+      "writtenOn": "2016-11-28T22:02:47Z",
+      "side": 1,
+      "message": "exynos4 has headers in hardware/samsung/exynos4/hal/include (although it would be nice if we could use the common exynos hals, i think we need some newer kernel-side stuff to get there)",
+      "parentUuid": "5f681702_23bc6804",
+      "range": {
+        "startLine": 775,
+        "startChar": 57,
+        "endLine": 775,
+        "endChar": 59
+      },
+      "revId": "adad09316f5f2250081f5a29fbdadc012cdc6d9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5f681702_43bfe4fa",
         "filename": "include/core/SkFimgApi4x.h",
         "patchSetId": 1
