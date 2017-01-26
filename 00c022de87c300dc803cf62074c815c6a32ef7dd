@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_bbff2501",
+        "filename": "src/core/SkBlitter_RGB16.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2017-01-26T02:33:19Z",
+      "side": 1,
+      "message": "This one isn\u0027t used?",
+      "range": {
+        "startLine": 36,
+        "startChar": 16,
+        "endLine": 36,
+        "endChar": 26
+      },
+      "revId": "00c022de87c300dc803cf62074c815c6a32ef7dd",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
