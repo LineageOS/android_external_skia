@@ -19,6 +19,7 @@
 
 class GrContext;
 class GrRenderTarget;
+class SkAndroidFrameworkUtils;
 class SkBaseDevice;
 class SkCanvasClipVisitor;
 class SkClipStack;
@@ -1350,6 +1351,7 @@ private:
     void doSave();
     void checkForDeferredSave();
 
+    friend class SkAndroidFrameworkUtils;
     friend class SkDrawIter;        // needs setupDrawForLayerDevice()
     friend class AutoDrawLooper;
     friend class SkLua;             // needs top layer size and offset

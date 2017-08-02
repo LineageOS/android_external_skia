@@ -14,6 +14,7 @@
 #include "SkImageFilter.h"
 #include "SkSurfaceProps.h"
 
+class SkAndroidFrameworkUtils;
 class SkBitmap;
 class SkClipStack;
 class SkDraw;
@@ -377,6 +378,7 @@ protected:
     }
 
 private:
+    friend class SkAndroidFrameworkUtils;
     friend class SkCanvas;
     friend struct DeviceCM; //for setMatrixClip
     friend class SkDraw;
