@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a3463e0e_1101d522",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 23518
+      },
+      "writtenOn": "2024-11-16T16:10:01Z",
+      "side": 1,
+      "message": "Builds \u0026 installs fine on LG G4 LineageOS 16 - Thank you for your continued support - it\u0027s appreciated.",
+      "revId": "af3b316fa1727a4b036d32e2c4eb4564ffef134f",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
