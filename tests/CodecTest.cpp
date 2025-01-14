@@ -9,6 +9,7 @@
 #include "Resources.h"
 #include "SkAndroidCodec.h"
 #include "SkAutoMalloc.h"
+#include "SkAutoPixmapStorage.h"
 #include "SkBitmap.h"
 #include "SkCodec.h"
 #include "SkCodecImageGenerator.h"
@@ -30,6 +31,7 @@
 #include "Test.h"
 
 #include "png.h"
+
 
 #include "sk_tool_utils.h"
 
@@ -1540,4 +1542,26 @@ DEF_TEST(Codec_webp_rowsDecoded, r) {
     }
 
     test_info(r, codec.get(), codec->getInfo(), SkCodec::kInvalidInput, nullptr);
+
+DEF_TEST(Codec_bmp_indexed_colorxform, r) {
+    constexpr char path[] = "bmp-size-32x32-8bpp.bmp";
+    std::unique_ptr<SkStream> stream(GetResourceAsStream(path));
+    if (!stream) {
+        SkDebugf("Missing resource '%s'\n", path);
+        return;
+    }
+
+    std::unique_ptr<SkCodec> codec = SkCodec::MakeFromStream(std::move(stream));
+    REPORTER_ASSERT(r, codec);
+
+    // decode to a < 32bpp buffer with a color transform
+    const SkImageInfo decodeInfo = codec->getInfo().makeColorType(kRGB_565_SkColorType)
+                                                   .makeColorSpace(SkColorSpace::MakeSRGBLinear());
+    SkAutoPixmapStorage aps;
+    aps.alloc(decodeInfo);
+
+    // should not crash
+    auto res = codec->getPixels(aps);
+
+    REPORTER_ASSERT(r, res == SkCodec::kSuccess);
 }
