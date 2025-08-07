@@ -1837,6 +1837,7 @@ cc_defaults {
     target: {
       android: {
         shared_libs: [
+           "libdng_sdk",
             "libEGL",
             "libGLESv2",
             "libvulkan",
@@ -1853,7 +1854,6 @@ cc_defaults {
     name: "skia_deps",
     defaults: ["skia_renderengine_deps"],
     shared_libs: [
-        "libdng_sdk",
         "libjpeg",
         "libpiex",
         "libexpat",
@@ -1868,11 +1868,15 @@ cc_defaults {
       android: {
         shared_libs: [
             "libheif",
+            "libdng_sdk",
         ],
       },
       darwin: {
         host_ldlibs: [
             "-framework AppKit",
+        ],
+        static_libs: [
+          "libdng_sdk",
         ],
       },
       windows: {
