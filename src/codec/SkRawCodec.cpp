@@ -96,7 +96,7 @@ class SkDngHost : public dng_host {
 public:
     explicit SkDngHost(dng_memory_allocator* allocater) : dng_host(allocater) {}
 
-    void PerformAreaTask(dng_area_task& task, const dng_rect& area) override {
+    void PerformAreaTask(dng_area_task& task, const dng_rect& area, dng_area_task_progress*) override {
         SkTaskGroup taskGroup;
 
         // tileSize is typically 256x256
@@ -107,11 +107,11 @@ public:
 
         SkMutex mutex;
         SkTArray<dng_exception> exceptions;
-        task.Start(numTasks, tileSize, &Allocator(), Sniffer());
+        task.Start(numTasks, area, tileSize, &Allocator(), Sniffer());
         for (int taskIndex = 0; taskIndex < numTasks; ++taskIndex) {
             taskGroup.add([&mutex, &exceptions, &task, this, taskIndex, taskAreas, tileSize] {
                 try {
-                    task.ProcessOnThread(taskIndex, taskAreas[taskIndex], tileSize, this->Sniffer());
+                    task.ProcessOnThread(taskIndex, taskAreas[taskIndex], tileSize, this->Sniffer(), nullptr);
                 } catch (dng_exception& exception) {
                     SkAutoMutexExclusive lock(mutex);
                     exceptions.push_back(exception);
@@ -407,7 +407,13 @@ private:
 class SkDngStream : public dng_stream {
 public:
     // Will NOT take the ownership of the stream.
-    SkDngStream(SkRawStream* stream) : fStream(stream) {}
+    SkDngStream(SkRawStream* stream)
+            // The default constructor sets offsetInOriginalFile to invalid (-1), however
+            // this results in dng_negative hitting a bug path that causes a crash due to
+            // unsigned overflow occuring. This offset doesn't seem to serve any purpose,
+            // so just pretend we're always at the start of the file to avoid the crash
+            : dng_stream((dng_abort_sniffer*) nullptr, dng_stream::kDefaultBufferSize, 0)
+            , fStream(stream) {}
 
     ~SkDngStream() override {}
 

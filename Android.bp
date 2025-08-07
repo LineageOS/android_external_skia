@@ -1844,7 +1844,6 @@ cc_defaults {
     name: "skia_deps",
     defaults: ["skia_renderengine_deps"],
     shared_libs: [
-        "libdng_sdk",
         "libjpeg",
         "libpiex",
         "libexpat",
@@ -1860,11 +1859,20 @@ cc_defaults {
       android: {
         shared_libs: [
             "libheif",
+            "libdng_sdk",
+        ],
+      },
+      host_linux: {
+        static_libs: [
+            "libdng_sdk",
         ],
       },
       darwin: {
         host_ldlibs: [
             "-framework AppKit",
+        ],
+        static_libs: [
+            "libdng_sdk",
         ],
       },
       windows: {
